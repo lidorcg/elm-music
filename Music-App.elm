@@ -1,6 +1,5 @@
-import Track
-import Html exposing (..)
 import Html.App as App
+import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (type', placeholder)
 import Http exposing (send, defaultSettings, fromJson, Body, Error)
@@ -8,6 +7,10 @@ import Task exposing (Task, perform)
 import Json.Encode as Json
 import Json.Decode exposing (Decoder, at, string, list)
 import Json.Decode.Pipeline exposing (decode, required, optional)
+
+import TrackList
+import Track
+
 
 
 main =
@@ -19,19 +22,18 @@ main =
     }
 
 
-
 -- MODEL
 
 
 type alias Model =
-  { track_id : String
-  , tracks : List Track.Model
+  { query : String
+  , tracks : TrackList.Model
+  , error : String
   }
 
 
-init : (Model, Cmd Msg)
 init =
-  ( Model "" []
+  ( Model "" TrackList.init ""
   , Cmd.none
   )
 
@@ -41,31 +43,29 @@ init =
 
 
 type Msg
-  = ChangeTrackId String
-  | FetchTrack
+  = ChangeQuery String
+  | SearchTracks
   | FetchSucceed (List Track.Model)
   | FetchFail Http.Error
-  | TrackMsg Track.Msg
+  | TrackListMsg TrackList.Msg
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    ChangeTrackId input ->
-      ({model | track_id = input}, Cmd.none)
+    ChangeQuery input ->
+      ({model | query=input}, Cmd.none)
 
-    FetchTrack ->
-      (model, getTrack model.track_id)
+    SearchTracks ->
+      (model, searchTracks model.query)
 
     FetchSucceed tracks ->
-      ( {model
-      | tracks = tracks}
-      , Cmd.none)
+      ({model | tracks={tracks=tracks}}, Cmd.none)
 
-    FetchFail _ ->
-      (model, Cmd.none)
+    FetchFail err ->
+      ({model | error=(logError err)}, Cmd.none)
 
-    TrackMsg _ ->
+    TrackListMsg _ ->
       (model, Cmd.none)
 
 
@@ -76,28 +76,21 @@ update msg model =
 view : Model -> Html Msg
 view model =
   let
-    tracks = List.map viewTrack model.tracks
+    tracks = viewTracks model.tracks
   in
     div []
-    [ input [ type' "text", placeholder "Track", onInput ChangeTrackId ] []
-    , button [ onClick FetchTrack ] [ text "Get Song!" ]
-    , h1 [] [ text "Tracks:" ]
-    , tracksTable tracks
+    [ form [ onSubmit SearchTracks ]
+    [ input [ type' "text", placeholder "Track", onInput ChangeQuery ] []
+    , button [] [ text "Search!" ]
+    ]
+    , tracks
     ]
 
 
-tracksTable tracks =
-  table []
-  ([ tr []
-    [ th [] [ text "Name" ]
-    , th [] [ text "Duration" ]
-    , th [] [ text "ytID" ]
-    ]
-  ] ++ tracks)
+viewTracks : TrackList.Model -> Html Msg
+viewTracks tracks =
+  App.map TrackListMsg (TrackList.view tracks)
 
-viewTrack : Track.Model -> Html Msg
-viewTrack track =
-  App.map TrackMsg (Track.view track)
 
 
 -- SUBSCRIPTIONS
@@ -108,18 +101,22 @@ subscriptions model =
   Sub.none
 
 
-
+-- TODO: extract to module
 -- HTTP
 
 
-getTrack : String -> Cmd Msg
-getTrack query =
+searchTracks : String -> Cmd Msg
+searchTracks query =
   let
     url =
       "http://localhost:5000/graphql?"
 
     gql =
-      "{searchTracks(query: \"" ++ query ++ "\"){name duration youtubeId}}"
+      "{searchTracks(query: \"" ++ query ++ """\"){
+        name
+        artists{name}
+        youtubeId
+      }}"""
 
     jsonObject =
       Json.object
@@ -148,17 +145,34 @@ postJson decoder url body =
 
 decodeJson : Decoder (List Track.Model)
 decodeJson =
-  at ["data", "searchTracks"] trackListDecoder
-
-
-trackListDecoder : Decoder (List Track.Model)
-trackListDecoder =
-  list trackDecoder
+  at ["data", "searchTracks"] (list trackDecoder)
 
 
 trackDecoder : Decoder Track.Model
 trackDecoder =
   decode Track.Model
     |> required "name" string
-    |> required "duration" string
+    |> required "artists" (list artistDecoder)
     |> optional "youtubeId" string "(No ytID)"
+
+
+artistDecoder : Decoder Track.Artist
+artistDecoder =
+  decode Track.Artist
+    |> required "name" string
+
+
+logError : Http.Error -> String
+logError err =
+  case err of
+    Http.Timeout ->
+      Debug.log "Timeout" "Timeout"
+
+    Http.NetworkError ->
+      Debug.log "NetworkError" "NetworkError"
+
+    Http.UnexpectedPayload str ->
+      Debug.log str str
+
+    Http.BadResponse n str ->
+      Debug.log str str

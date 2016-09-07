@@ -1,7 +1,8 @@
-module Track exposing ( Model, view, Msg )
+module Track exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (..)
+import String
 
 
 
@@ -10,12 +11,17 @@ import Html.Events exposing (..)
 
 type alias Model =
   { name : String
-  , duration : String
+  , artists : List Artist
   , youtubeId : String
   }
 
 
+type alias Artist =
+  { name : String }
 
+
+
+-- TODO: get rid of the update section
 -- UPDATE
 
 
@@ -38,6 +44,6 @@ view : Model -> Html Msg
 view model =
   tr []
     [ td [] [text model.name]
-    , td [] [text model.duration]
+    , td [] [text (String.join ", " (List.map .name model.artists))]
     , td [] [text model.youtubeId]
     ]
