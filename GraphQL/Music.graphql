@@ -1,0 +1,9 @@
+query searchTracks($query: String!) {
+  searchTracks(query: $query) {
+    name
+    youtubeId
+    artists {
+      name
+    }
+  }
+}

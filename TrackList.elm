@@ -1,36 +1,37 @@
 module TrackList exposing (..)
 
+import List exposing (map)
 import Html.App as App
 import Html exposing (..)
 import Html.Events exposing (..)
-
 import Track
-
 
 
 -- MODEL
 
 
 type alias Model =
-  { tracks : List Track.Model }
+    List Track.Model
 
 
+init : Model
 init =
-  Model []
+    []
+
 
 
 -- UPDATE
 
 
 type Msg
-  = TrackMsg Track.Msg
+    = TrackMsg Track.Msg
 
 
-update : Msg -> Model -> (Model, Cmd Msg)
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  case msg of
-    TrackMsg _ ->
-      (model, Cmd.none)
+    case msg of
+        TrackMsg _ ->
+            ( model, Cmd.none )
 
 
 
@@ -39,24 +40,28 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-  let
-    tracks = List.map viewTrack model.tracks
-  in
-    div []
-    [ h1 [] [ text "Tracks:" ]
-    , tracksTable tracks
-    ]
+    let
+        tracks =
+            map viewTrack model
+    in
+        div []
+            [ h1 [] [ "Tracks:" |> text ]
+            , tracks |> trackTable
+            ]
 
 
-tracksTable tracks =
-  table []
-  ([ tr []
-    [ th [] [ text "Name" ]
-    , th [] [ text "Artist" ]
-    , th [] [ text "ytID" ]
-    ]
-  ] ++ tracks)
+trackTable : List (Html Msg) -> Html Msg
+trackTable tracks =
+    table [] <|
+        [ tr []
+            [ th [] [ text "Name" ]
+            , th [] [ text "Artist" ]
+            , th [] [ text "ytID" ]
+            ]
+        ]
+            ++ tracks
+
 
 viewTrack : Track.Model -> Html Msg
 viewTrack track =
-  App.map TrackMsg (Track.view track)
+    track |> Track.view |> App.map TrackMsg

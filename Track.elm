@@ -1,23 +1,23 @@
 module Track exposing (..)
 
+import String exposing (join)
+import Maybe exposing (withDefault)
+import List exposing (map)
 import Html exposing (..)
 import Html.Events exposing (..)
-import String
-
 
 
 -- MODEL
 
 
 type alias Model =
-  { name : String
-  , artists : List Artist
-  , youtubeId : String
-  }
-
-
-type alias Artist =
-  { name : String }
+    { name : Maybe String
+    , youtubeId : Maybe String
+    , artists :
+        List
+            { name : Maybe String
+            }
+    }
 
 
 
@@ -26,14 +26,14 @@ type alias Artist =
 
 
 type Msg
-  = None
+    = None
 
 
 update : Msg -> Model -> Model
 update msg model =
-  case msg of
-    None ->
-      model
+    case msg of
+        None ->
+            model
 
 
 
@@ -42,8 +42,19 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-  tr []
-    [ td [] [text model.name]
-    , td [] [text (String.join ", " (List.map .name model.artists))]
-    , td [] [text model.youtubeId]
-    ]
+    let
+        name =
+            model.name |> withDefault "Unknown"
+
+        artistsNames =
+             map (.name >> withDefault "Unknown") model.artists |> join ", "
+             -- TODO: figure out map and |> operator
+
+        youtubeId =
+            model.youtubeId |> withDefault "No Youtube ID"
+    in
+        tr []
+            [ td [] [ name |> text ]
+            , td [] [ artistsNames |> text ]
+            , td [] [ youtubeId |> text ]
+            ]
