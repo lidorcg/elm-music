@@ -4,8 +4,9 @@ import Debug exposing (log)
 import Html.App as App
 import Html exposing (..)
 import Html.Events exposing (..)
-import Html.Attributes exposing (type', placeholder)
+import Html.Attributes exposing (class, type', placeholder)
 import Http exposing (Error)
+import CDN exposing (bulma, fontAwesome)
 import Task exposing (perform)
 import TrackList
 import GraphQL.Music exposing (searchTracks, SearchTracksResult)
@@ -80,12 +81,24 @@ view model =
             viewTracks model.result
     in
         div []
-            [ form [ onSubmit SearchTracks ]
-                [ input [ type' "text", placeholder "Search for Music...", onInput ChangeQuery ] []
-                , button [] [ text "Search!" ]
-                ]
+            [ bulma.css
+            , fontAwesome.css
+            , viewSearchForm
             , tracks
             ]
+
+
+viewSearchForm : Html Msg
+viewSearchForm =
+    form [ onSubmit SearchTracks ]
+        [ p [ class "control has-addons" ]
+            [ input
+                [ class "input", placeholder "Find music", type' "text", onInput ChangeQuery ]
+                []
+            , button [ class "button is-info" ]
+                [ text "Search  " ]
+            ]
+        ]
 
 
 viewTracks : TrackList.Model -> Html Msg

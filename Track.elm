@@ -5,6 +5,7 @@ import Maybe exposing (withDefault)
 import List exposing (map)
 import Html exposing (..)
 import Html.Events exposing (..)
+import Html.Attributes exposing (class, href)
 
 
 -- MODEL
@@ -47,14 +48,26 @@ view model =
             model.name |> withDefault "Unknown"
 
         artistsNames =
-             map (.name >> withDefault "Unknown") model.artists |> join ", "
-             -- TODO: figure out map and |> operator
+            map (.name >> withDefault "Unknown") model.artists |> join ", "
 
+        -- TODO: figure out map and |> operator
         youtubeId =
-            model.youtubeId |> withDefault "No Youtube ID"
+            model.youtubeId |> youtubeLinkView
     in
         tr []
-            [ td [] [ name |> text ]
-            , td [] [ artistsNames |> text ]
-            , td [] [ youtubeId |> text ]
+            [ td [] [ text name ]
+            , td [] [ text artistsNames ]
+            , td [ class "is-icon" ] [ youtubeId ]
             ]
+
+
+youtubeLinkView : Maybe String -> Html Msg
+youtubeLinkView ytId =
+    case ytId of
+        Nothing ->
+            span [ class "icon" ]
+                 [ i [ class "fa fa-minus-circle" ] [] ]
+
+        Just id ->
+            a [ href ("https://www.youtube.com/watch?v=" ++ id) ]
+              [ i [ class "fa fa-play-circle" ] [] ]

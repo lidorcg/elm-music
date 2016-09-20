@@ -4,6 +4,7 @@ import List exposing (map)
 import Html.App as App
 import Html exposing (..)
 import Html.Events exposing (..)
+import Html.Attributes exposing (class)
 import Track
 
 
@@ -45,21 +46,23 @@ view model =
             map viewTrack model
     in
         div []
-            [ h1 [] [ "Tracks:" |> text ]
+            [ h1 [] [ text "Tracks:" ]
             , tracks |> trackTable
             ]
 
 
 trackTable : List (Html Msg) -> Html Msg
 trackTable tracks =
-    table [] <|
+    table [ class "table" ]
+    [ thead []
         [ tr []
             [ th [] [ text "Name" ]
             , th [] [ text "Artist" ]
             , th [] [ text "ytID" ]
             ]
         ]
-            ++ tracks
+    , tbody [] tracks
+    ]
 
 
 viewTrack : Track.Model -> Html Msg
