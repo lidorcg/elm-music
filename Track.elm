@@ -1,4 +1,4 @@
-module Track exposing (..)
+module Track exposing (Model, Msg, update, view)
 
 import String exposing (join)
 import Maybe exposing (withDefault)
@@ -66,8 +66,8 @@ youtubeLinkView ytId =
     case ytId of
         Nothing ->
             span [ class "icon" ]
-                 [ i [ class "fa fa-minus-circle" ] [] ]
+                [ i [ class "fa fa-minus-circle" ] [] ]
 
         Just id ->
             a [ href ("https://www.youtube.com/watch?v=" ++ id) ]
-              [ i [ class "fa fa-play-circle" ] [] ]
+                [ i [ class "fa fa-play-circle" ] [] ]

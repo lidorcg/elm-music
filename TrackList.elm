@@ -1,4 +1,4 @@
-module TrackList exposing (..)
+module TrackList exposing (Model, init, Msg, update, view)
 
 import List exposing (map)
 import Html.App as App
@@ -46,7 +46,7 @@ view model =
             map viewTrack model
     in
         div []
-            [ h1 [] [ text "Tracks:" ]
+            [ h3 [ class "title is-3" ] [ text "Tracks:" ]
             , tracks |> trackTable
             ]
 
@@ -54,15 +54,15 @@ view model =
 trackTable : List (Html Msg) -> Html Msg
 trackTable tracks =
     table [ class "table" ]
-    [ thead []
-        [ tr []
-            [ th [] [ text "Name" ]
-            , th [] [ text "Artist" ]
-            , th [] [ text "ytID" ]
+        [ thead []
+            [ tr []
+                [ th [] [ text "Name" ]
+                , th [] [ text "Artist" ]
+                , th [] [ text "ytID" ]
+                ]
             ]
+        , tbody [] tracks
         ]
-    , tbody [] tracks
-    ]
 
 
 viewTrack : Track.Model -> Html Msg
