@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Debug exposing (log)
+import Maybe exposing (withDefault)
 import Html.App as App
 import Html exposing (..)
 import Html.Events exposing (..)
@@ -28,13 +29,14 @@ main =
 
 type alias Model =
     { query : String
+    , loading : Maybe String
     , result : TrackList.Model
     , error : Maybe Http.Error
     }
 
 
 init =
-    ( Model "" TrackList.init Nothing
+    ( Model "" Nothing TrackList.init Nothing
     , Cmd.none
     )
 
@@ -55,19 +57,24 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChangeQuery input ->
-            ( { model | query = input }, Cmd.none )
+            ( { model | query = input }
+            , Cmd.none )
 
         SearchTracks ->
-            ( model, searchTracks { query = model.query } |> perform FetchFail FetchSucceed )
+            ( { model | loading = Just "is-loading" }
+            , searchTracks { query = model.query } |> perform FetchFail FetchSucceed )
 
         FetchSucceed result ->
-            ( { model | result = result.searchTracks }, Cmd.none )
+            ( { model | loading = Nothing, result = result.searchTracks }
+            , Cmd.none )
 
         FetchFail error ->
-            ( { model | error = Maybe.Just (log "error" error) }, Cmd.none )
+            ( { model | loading = Nothing, error = Maybe.Just (log "error" error) }
+            , Cmd.none )
 
         TrackListMsg _ ->
-            ( model, Cmd.none )
+            ( model
+            , Cmd.none )
 
 
 
@@ -83,20 +90,24 @@ view model =
         div []
             [ bulma.css
             , fontAwesome.css
-            , viewSearchForm
+            , viewSearchForm model
             , tracks
             ]
 
 
-viewSearchForm : Html Msg
-viewSearchForm =
+viewSearchForm : Model -> Html Msg
+viewSearchForm model =
+  let
+    isLoading =
+      model.loading |> withDefault ""
+  in
     form [ onSubmit SearchTracks ]
         [ p [ class "control has-addons" ]
             [ input
                 [ class "input", placeholder "Find music", type' "text", onInput ChangeQuery ]
                 []
-            , button [ class "button is-info" ]
-                [ text "Search  " ]
+            , button [ class <| "button is-info " ++ isLoading ]
+                [ text "Search" ]
             ]
         ]
 
