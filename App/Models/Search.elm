@@ -1,4 +1,4 @@
-module Models.Search exposing (Model, init)
+module Models.Search exposing (State, init)
 
 import Http exposing (Error)
 import Models.Track as Track
@@ -7,13 +7,13 @@ import Models.Track as Track
 -- MODEL
 
 
-type alias Model =
+type alias State =
     { query : String
-    , loading : Maybe String
-    , result : List Track.Model
+    , isLoading : Maybe String
+    , results : List Track.Model
     , error : Maybe Http.Error
     }
 
 
 init =
-    Model "" Nothing [] Nothing
+    State "" Nothing [] Nothing

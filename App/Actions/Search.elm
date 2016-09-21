@@ -6,6 +6,7 @@ import Task exposing (perform)
 import GraphQL.Music exposing (searchTracks, SearchTracksResult)
 import Models.Search as Search
 
+
 -- UPDATE
 
 
@@ -16,7 +17,7 @@ type Msg
     | FetchFail Http.Error
 
 
-update : Msg -> Search.Model -> ( Search.Model, Cmd Msg )
+update : Msg -> Search.State -> ( Search.State, Cmd Msg )
 update msg model =
     case msg of
         ChangeQuery input ->
@@ -25,16 +26,16 @@ update msg model =
             )
 
         SearchTracks ->
-            ( { model | loading = Just "is-loading" }
+            ( { model | isLoading = Just "is-loading" }
             , searchTracks { query = model.query } |> perform FetchFail FetchSucceed
             )
 
         FetchSucceed result ->
-            ( { model | loading = Nothing, result = result.searchTracks }
+            ( { model | isLoading = Nothing, results = result.searchTracks }
             , Cmd.none
             )
 
         FetchFail error ->
-            ( { model | loading = Nothing, error = Maybe.Just (log "error" error) }
+            ( { model | isLoading = Nothing, error = Maybe.Just (log "error" error) }
             , Cmd.none
             )

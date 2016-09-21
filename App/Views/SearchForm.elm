@@ -1,19 +1,20 @@
 module Views.SearchForm exposing (view)
 
-import Maybe exposing (withDefault)
+
 import Html exposing (..)
-import Html.Events exposing (..)
+import Html.Events exposing (onSubmit, onInput)
 import Html.Attributes exposing (class, type', placeholder)
+import Maybe exposing (withDefault)
 import Actions.Search exposing (..)
 
 
 -- VIEW
 
 
-view model =
+view searchState =
     let
         isLoading =
-            model.loading |> withDefault ""
+            searchState.isLoading |> withDefault ""
     in
         form [ onSubmit SearchTracks ]
             [ p [ class "nav-item control has-addons" ]

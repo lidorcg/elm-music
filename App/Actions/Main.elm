@@ -1,12 +1,14 @@
 module Actions.Main exposing (..)
 
 import Actions.Search as Search
+import Models.Main as Main
 
 
 type Msg
     = SearchMsg Search.Msg
 
 
+update : Msg -> Main.State -> ( Main.State, Cmd Msg )
 update msg model =
     case msg of
         SearchMsg searchMsg ->

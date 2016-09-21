@@ -6,5 +6,5 @@ import Views.TrackList as TrackList
 -- VIEW
 
 
-view searchModel =
-    TrackList.view searchModel.result
+view searchState =
+    TrackList.view searchState.results

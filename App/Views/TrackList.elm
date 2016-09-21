@@ -1,39 +1,56 @@
 module Views.TrackList exposing (view)
 
-import List exposing (map)
-import Html.App as App
 import Html exposing (..)
-import Html.Events exposing (..)
-import Html.Attributes exposing (class)
-import Views.TrackListItem as Track
+import Html.Attributes exposing (class, href)
+import List exposing (map)
+import Maybe exposing (withDefault)
+import String exposing (join)
 
 
 -- VIEW
 
 
-view model =
+view trackList =
     let
-        tracks =
-            map viewTrack model
+        trackRows =
+            map trackRow trackList
     in
-        div []
-            [ h3 [ class "title is-3" ] [ text "Tracks:" ]
-            , tracks |> trackTable
-            ]
-
-
-trackTable tracks =
-    table [ class "table" ]
-        [ thead []
-            [ tr []
-                [ th [] [ text "Name" ]
-                , th [] [ text "Artist" ]
-                , th [] [ text "ytID" ]
+        table [ class "table" ]
+            [ thead []
+                [ tr []
+                    [ th [] [ text "Name" ]
+                    , th [] [ text "Artist" ]
+                    , th [] [ text "ytID" ]
+                    ]
                 ]
+            , tbody [] trackRows
             ]
-        , tbody [] tracks
-        ]
 
 
-viewTrack track =
-    Track.view track
+trackRow track =
+    let
+        name =
+            track.name |> withDefault "Unknown"
+
+        artistsNames =
+            map (.name >> withDefault "Unknown") track.artists |> join ", "
+
+        youtubeId =
+            track.youtubeId |> youtubeLinkView
+    in
+        tr []
+            [ td [] [ text name ]
+            , td [] [ text artistsNames ]
+            , td [ class "is-icon" ] [ youtubeId ]
+            ]
+
+
+youtubeLinkView ytId =
+    case ytId of
+        Nothing ->
+            span [ class "icon" ]
+                [ i [ class "fa fa-minus-circle" ] [] ]
+
+        Just id ->
+            a [ href ("https://www.youtube.com/watch?v=" ++ id) ]
+                [ i [ class "fa fa-play-circle" ] [] ]
