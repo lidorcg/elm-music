@@ -1,4 +1,14 @@
-viewNav =
+module Views.Nav exposing (view)
+
+import Html exposing (..)
+import Html.Events exposing (..)
+import Html.Attributes exposing (class, href)
+import Views.SearchForm as SearchForm
+
+-- VIEW
+
+
+view searchModel =
     nav [ class "nav" ]
         [ div [ class "nav-left" ]
             [ a [ class "nav-item is-brand", href "#" ]
@@ -11,13 +21,5 @@ viewNav =
                 [ text "Blog    " ]
             ]
         , div [ class "nav-center" ]
-            [ p [ class "nav-item   control has-addons" ]
-                [ input
-                    [ class "input", placeholder "Find music", type' "text" ]
-                    []
-                , button
-                    [ class "button is-info" ]
-                    [ text "Search" ]
-                ]
-            ]
+            [ SearchForm.view searchModel ]
         ]

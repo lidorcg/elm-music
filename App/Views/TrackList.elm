@@ -1,45 +1,16 @@
-module TrackList exposing (Model, init, Msg, update, view)
+module Views.TrackList exposing (view)
 
 import List exposing (map)
 import Html.App as App
 import Html exposing (..)
 import Html.Events exposing (..)
 import Html.Attributes exposing (class)
-import Track
-
-
--- MODEL
-
-
-type alias Model =
-    List Track.Model
-
-
-init : Model
-init =
-    []
-
-
-
--- UPDATE
-
-
-type Msg
-    = TrackMsg Track.Msg
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        TrackMsg _ ->
-            ( model, Cmd.none )
-
+import Views.TrackListItem as Track
 
 
 -- VIEW
 
 
-view : Model -> Html Msg
 view model =
     let
         tracks =
@@ -51,7 +22,6 @@ view model =
             ]
 
 
-trackTable : List (Html Msg) -> Html Msg
 trackTable tracks =
     table [ class "table" ]
         [ thead []
@@ -65,6 +35,5 @@ trackTable tracks =
         ]
 
 
-viewTrack : Track.Model -> Html Msg
 viewTrack track =
-    track |> Track.view |> App.map TrackMsg
+    Track.view track

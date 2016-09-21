@@ -1,14 +1,12 @@
-module Actions exposing (..)
+module Actions.Main exposing (..)
 
-import State exposing (..)
-import Logic.Search as Search
+import Actions.Search as Search
 
 
 type Msg
     = SearchMsg Search.Msg
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         SearchMsg searchMsg ->

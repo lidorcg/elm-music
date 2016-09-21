@@ -1,6 +1,9 @@
-module State exposing (..)
+module Models.Main exposing (Model, init)
 
-import Logic.Search as Search
+import Models.Search as Search
+
+
+-- MODEL
 
 
 type alias Model =

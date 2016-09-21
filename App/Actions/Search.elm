@@ -1,26 +1,10 @@
-module Logic.Search exposing (..)
+module Actions.Search exposing (..)
 
 import Debug exposing (log)
 import Http exposing (Error)
 import Task exposing (perform)
-import TrackList
 import GraphQL.Music exposing (searchTracks, SearchTracksResult)
-
-
--- MODEL
-
-
-type alias Model =
-    { query : String
-    , loading : Maybe String
-    , result : TrackList.Model
-    , error : Maybe Http.Error
-    }
-
-
-init =
-    Model "" Nothing TrackList.init Nothing
-
+import Models.Search as Search
 
 -- UPDATE
 
@@ -30,10 +14,9 @@ type Msg
     | SearchTracks
     | FetchSucceed SearchTracksResult
     | FetchFail Http.Error
-    | TrackListMsg TrackList.Msg
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Search.Model -> ( Search.Model, Cmd Msg )
 update msg model =
     case msg of
         ChangeQuery input ->
@@ -53,10 +36,5 @@ update msg model =
 
         FetchFail error ->
             ( { model | loading = Nothing, error = Maybe.Just (log "error" error) }
-            , Cmd.none
-            )
-
-        TrackListMsg _ ->
-            ( model
             , Cmd.none
             )

@@ -1,4 +1,4 @@
-module Track exposing (Model, Msg, update, view)
+module Views.TrackListItem exposing (view)
 
 import String exposing (join)
 import Maybe exposing (withDefault)
@@ -8,40 +8,9 @@ import Html.Events exposing (..)
 import Html.Attributes exposing (class, href)
 
 
--- MODEL
-
-
-type alias Model =
-    { name : Maybe String
-    , youtubeId : Maybe String
-    , artists :
-        List
-            { name : Maybe String
-            }
-    }
-
-
-
--- TODO: get rid of the update section
--- UPDATE
-
-
-type Msg
-    = None
-
-
-update : Msg -> Model -> Model
-update msg model =
-    case msg of
-        None ->
-            model
-
-
-
 -- VIEW
 
 
-view : Model -> Html Msg
 view model =
     let
         name =
@@ -61,7 +30,6 @@ view model =
             ]
 
 
-youtubeLinkView : Maybe String -> Html Msg
 youtubeLinkView ytId =
     case ytId of
         Nothing ->
