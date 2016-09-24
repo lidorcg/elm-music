@@ -1,10 +1,26 @@
-module Actions.Search exposing (..)
+module State.Search exposing (..)
 
+import Models.Track as Track
 import Debug exposing (log)
 import Http exposing (Error)
 import Task exposing (perform)
 import GraphQL.Music exposing (searchTracks, SearchTracksResult)
-import Models.Search as Search
+
+
+-- MODEL
+
+
+type alias State =
+    { query : String
+    , isLoading : Maybe String
+    , results : List Track.Model
+    , error : Maybe Http.Error
+    }
+
+
+init =
+    State "" Nothing [] Nothing
+
 
 
 -- UPDATE
@@ -17,7 +33,7 @@ type Msg
     | FetchFail Http.Error
 
 
-update : Msg -> Search.State -> ( Search.State, Cmd Msg )
+update : Msg -> State -> ( State, Cmd Msg )
 update msg model =
     case msg of
         ChangeQuery input ->

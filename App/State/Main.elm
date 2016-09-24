@@ -1,7 +1,20 @@
-module Actions.Main exposing (..)
+module State.Main exposing (..)
 
-import Actions.Search as Search
-import Models.Main as Main
+import State.Search as Search
+
+
+-- MODEL
+
+
+type alias State =
+    { searchState : Search.State }
+
+
+init =
+    ( State Search.init
+    , Cmd.none
+    )
+
 
 
 -- UPDATE
@@ -11,7 +24,7 @@ type Msg
     = SearchMsg Search.Msg
 
 
-update : Msg -> Main.State -> ( Main.State, Cmd Msg )
+update : Msg -> State -> ( State, Cmd Msg )
 update msg model =
     case msg of
         SearchMsg searchMsg ->

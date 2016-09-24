@@ -52,5 +52,5 @@ youtubeLinkView ytId =
                 [ i [ class "fa fa-minus-circle" ] [] ]
 
         Just id ->
-            a [ href ("https://www.youtube.com/watch?v=" ++ id) ]
+            a [ href <| "https://www.youtube.com/watch?v=" ++ id ]
                 [ i [ class "fa fa-play-circle" ] [] ]

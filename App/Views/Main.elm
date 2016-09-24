@@ -5,7 +5,7 @@ import Html exposing (..)
 import CDN exposing (bulma, fontAwesome)
 import Views.Nav as Nav
 import Views.SearchResult as SearchResult
-import Actions.Main as Actions
+import State.Main as Actions
 
 
 -- VIEW
