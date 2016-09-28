@@ -1,18 +1,23 @@
 module Views.Nav exposing (view)
 
+import Html.App as App
 import Html exposing (..)
-import Html.Attributes exposing (class, href)
+import Html.Attributes exposing (..)
 import Views.SearchForm as SearchForm
+import State.Main as Main
 
 
 -- VIEW
 
 
-view searchState =
+view : Main.State -> Html Main.Msg
+view state =
     nav [ class "nav" ]
         [ div [ class "nav-left" ]
-            [ a [ class "nav-item is-brand", href "#" ]
-                [ h1 [ class "title" ] [ text "Music" ] ]
-            , SearchForm.view searchState
-            ]
+            [ searchFrom state ]
         ]
+
+
+searchFrom : Main.State -> Html Main.Msg
+searchFrom state =
+    App.map Main.SearchMsg <| SearchForm.view state.searchState

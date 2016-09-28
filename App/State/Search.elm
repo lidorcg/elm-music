@@ -18,6 +18,7 @@ type alias State =
     }
 
 
+init : State
 init =
     State "" Nothing [] Nothing
 
@@ -34,24 +35,24 @@ type Msg
 
 
 update : Msg -> State -> ( State, Cmd Msg )
-update msg model =
+update msg state =
     case msg of
         ChangeQuery input ->
-            ( { model | query = input }
+            ( { state | query = input }
             , Cmd.none
             )
 
         SearchTracks ->
-            ( { model | isLoading = Just "is-loading" }
-            , searchTracks { query = model.query } |> perform FetchFail FetchSucceed
+            ( { state | isLoading = Just "is-loading" }
+            , searchTracks { query = state.query } |> perform FetchFail FetchSucceed
             )
 
         FetchSucceed result ->
-            ( { model | isLoading = Nothing, results = result.searchTracks }
+            ( { state | isLoading = Nothing, results = result.searchTracks }
             , Cmd.none
             )
 
         FetchFail error ->
-            ( { model | isLoading = Nothing, error = Maybe.Just (log "error" error) }
+            ( { state | isLoading = Nothing, error = Maybe.Just (log "error" error) }
             , Cmd.none
             )

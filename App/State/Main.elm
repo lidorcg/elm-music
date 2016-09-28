@@ -1,17 +1,21 @@
 module State.Main exposing (..)
 
 import State.Search as Search
+import State.Lists as Lists
 
 
 -- MODEL
 
 
 type alias State =
-    { searchState : Search.State }
+    { searchState : Search.State
+    , listsState : Lists.State
+    }
 
 
+init : ( State, Cmd a )
 init =
-    ( State Search.init
+    ( State Search.init Lists.init
     , Cmd.none
     )
 
@@ -22,16 +26,26 @@ init =
 
 type Msg
     = SearchMsg Search.Msg
+    | ListsMsg Lists.Msg
 
 
 update : Msg -> State -> ( State, Cmd Msg )
-update msg model =
+update msg state =
     case msg of
         SearchMsg searchMsg ->
             let
-                ( updatedSearchModel, searchCmd ) =
-                    Search.update searchMsg model.searchState
+                ( updatedSearchState, searchCmd ) =
+                    Search.update searchMsg state.searchState
             in
-                ( { model | searchState = updatedSearchModel }
+                ( { state | searchState = updatedSearchState }
                 , Cmd.map SearchMsg searchCmd
+                )
+
+        ListsMsg listsMsg ->
+            let
+                updatedListsState =
+                    Lists.update listsMsg state.listsState
+            in
+                ( { state | listsState = updatedListsState }
+                , Cmd.none
                 )
