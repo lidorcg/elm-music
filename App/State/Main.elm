@@ -2,6 +2,7 @@ module State.Main exposing (..)
 
 import State.Search as Search
 import State.Lists as Lists
+import State.Content as Content
 
 
 -- MODEL
@@ -10,12 +11,13 @@ import State.Lists as Lists
 type alias State =
     { searchState : Search.State
     , listsState : Lists.State
+    , contentState : Content.State
     }
 
 
 init : ( State, Cmd a )
 init =
-    ( State Search.init Lists.init
+    ( State Search.init Lists.init Content.init
     , Cmd.none
     )
 
@@ -36,8 +38,21 @@ update msg state =
             let
                 ( updatedSearchState, searchCmd ) =
                     Search.update searchMsg state.searchState
+
+                ( updatedlistsState, updatedcontentState ) =
+                    case searchMsg of
+                        Search.ChangeQuery input ->
+                            ( state.listsState, state.contentState )
+
+                        _ ->
+                            ( Lists.update (Lists.SetActiveList Nothing) state.listsState
+                            , Content.update (Content.SetContent Content.Search) state.contentState
+                            )
             in
-                ( { state | searchState = updatedSearchState }
+                ( { state
+                    | searchState = updatedSearchState
+                    , listsState = updatedlistsState
+                  }
                 , Cmd.map SearchMsg searchCmd
                 )
 
@@ -45,6 +60,16 @@ update msg state =
             let
                 updatedListsState =
                     Lists.update listsMsg state.listsState
+
+                updatedcontentState =
+                  case listsMsg of
+                    Lists.SetActiveList index ->
+                      case index of
+                        Nothing ->
+                          state.contentState
+
+                        Just i ->
+                          Content.update (Content.SetContent <| Content.List i) state.contentState
             in
                 ( { state | listsState = updatedListsState }
                 , Cmd.none

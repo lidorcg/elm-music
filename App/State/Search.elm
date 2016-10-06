@@ -1,26 +1,23 @@
 module State.Search exposing (..)
 
-import Models.Track as Track
 import Debug exposing (log)
 import Http exposing (Error)
 import Task exposing (perform)
-import GraphQL.Music exposing (searchTracks, SearchTracksResult)
-
+import GraphQL.Music exposing (search, SearchResult)
+import Models.RemoteData exposing (..)
 
 -- MODEL
 
 
 type alias State =
     { query : String
-    , isLoading : Maybe String
-    , results : List Track.Model
-    , error : Maybe Http.Error
+    , result : WebData SearchResult
     }
 
 
 init : State
 init =
-    State "" Nothing [] Nothing
+    State "" NotAsked
 
 
 
@@ -30,7 +27,7 @@ init =
 type Msg
     = ChangeQuery String
     | SearchTracks
-    | FetchSucceed SearchTracksResult
+    | FetchSucceed SearchResult
     | FetchFail Http.Error
 
 
@@ -43,16 +40,16 @@ update msg state =
             )
 
         SearchTracks ->
-            ( { state | isLoading = Just "is-loading" }
-            , searchTracks { query = state.query } |> perform FetchFail FetchSucceed
+            ( { state | result = Loading }
+            , search { query = state.query } |> perform FetchFail FetchSucceed
             )
 
         FetchSucceed result ->
-            ( { state | isLoading = Nothing, results = result.searchTracks }
+            ( { state | result = Success result }
             , Cmd.none
             )
 
         FetchFail error ->
-            ( { state | isLoading = Nothing, error = Maybe.Just (log "error" error) }
+            ( { state | result = Failure (log "error" error) }
             , Cmd.none
             )

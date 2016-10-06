@@ -3,7 +3,7 @@
 -}
 
 
-module GraphQL.Music exposing (searchTracks, SearchTracksResult)
+module GraphQL.Music exposing (search, SearchResult, lists, ListsResult)
 
 import Task exposing (Task)
 import Json.Decode exposing (..)
@@ -17,7 +17,7 @@ endpointUrl =
     "http://localhost:5000/graphql"
 
 
-type alias SearchTracksResult =
+type alias SearchResult =
     { searchTracks :
         List
             { name : Maybe String
@@ -30,14 +30,14 @@ type alias SearchTracksResult =
     }
 
 
-searchTracks :
+search :
     { query : String
     }
-    -> Task Http.Error SearchTracksResult
-searchTracks params =
+    -> Task Http.Error SearchResult
+search params =
     let
         graphQLQuery =
-            """query searchTracks($query: String!) { searchTracks(query: $query) { name youtubeId artists { name } } }"""
+            """query search($query: String!) { searchTracks(query: $query) { name youtubeId artists { name } } }"""
     in
         let
             graphQLParams =
@@ -45,12 +45,12 @@ searchTracks params =
                     [ ( "query", Json.Encode.string params.query )
                     ]
         in
-            GraphQL.query endpointUrl graphQLQuery "searchTracks" (encode 0 graphQLParams) searchTracksResult
+            GraphQL.query endpointUrl graphQLQuery "search" (encode 0 graphQLParams) searchResult
 
 
-searchTracksResult : Decoder SearchTracksResult
-searchTracksResult =
-    map SearchTracksResult
+searchResult : Decoder SearchResult
+searchResult =
+    map SearchResult
         ("searchTracks"
             := (list
                     (map (\name youtubeId artists -> { name = name, youtubeId = youtubeId, artists = artists }) (maybe ("name" := string))
@@ -58,6 +58,58 @@ searchTracksResult =
                         `apply`
                             ("artists"
                                 := (list (map (\name -> { name = name }) (maybe ("name" := string))))
+                            )
+                    )
+               )
+        )
+
+
+type alias ListsResult =
+    { myLists :
+        List
+            { id : String
+            , name : Maybe String
+            , tracks :
+                List
+                    { name : Maybe String
+                    , duration : Maybe String
+                    , artists : Maybe String
+                    , youtubeId : Maybe String
+                    }
+            }
+    }
+
+
+lists : Task Http.Error ListsResult
+lists =
+    let
+        graphQLQuery =
+            """query lists { myLists { id name tracks { name duration artists youtubeId } } }"""
+    in
+        let
+            graphQLParams =
+                Json.Encode.object
+                    []
+        in
+            GraphQL.query endpointUrl graphQLQuery "lists" (encode 0 graphQLParams) listsResult
+
+
+listsResult : Decoder ListsResult
+listsResult =
+    map ListsResult
+        ("myLists"
+            := (list
+                    (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)
+                        `apply` (maybe ("name" := string))
+                        `apply`
+                            ("tracks"
+                                := (list
+                                        (map (\name duration artists youtubeId -> { name = name, duration = duration, artists = artists, youtubeId = youtubeId }) (maybe ("name" := string))
+                                            `apply` (maybe ("duration" := string))
+                                            `apply` (maybe ("artists" := string))
+                                            `apply` (maybe ("youtubeId" := string))
+                                        )
+                                   )
                             )
                     )
                )
