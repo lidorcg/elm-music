@@ -1,24 +1,18 @@
 module Actions.Main exposing (..)
 
-import Actions.Search as Search
-import Models.Main as Main
+import GraphQL.Music exposing (PlaylistsResult, SearchResult)
+import Http exposing (Error)
 
 
--- UPDATE
+-- ACTIONS
 
 
 type Msg
-    = SearchMsg Search.Msg
-
-
-update : Msg -> Main.State -> ( Main.State, Cmd Msg )
-update msg model =
-    case msg of
-        SearchMsg searchMsg ->
-            let
-                ( updatedSearchModel, searchCmd ) =
-                    Search.update searchMsg model.searchState
-            in
-                ( { model | searchState = updatedSearchModel }
-                , Cmd.map SearchMsg searchCmd
-                )
+    = ShowPlaylist String
+    | FetchPlaylistsData
+    | FetchPlaylistsFail Http.Error
+    | FetchPlaylistsSucceed PlaylistsResult
+    | ChangeQuery String
+    | Search
+    | FetchSearchFail Http.Error
+    | FetchSearchSucceed SearchResult

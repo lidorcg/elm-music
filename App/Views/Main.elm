@@ -1,24 +1,19 @@
 module Views.Main exposing (view)
 
-import Html.App as App
+import Stores.Main as State
+import Actions.Main as Actions
 import Html exposing (..)
 import CDN exposing (bulma, fontAwesome)
-import Views.Nav as Nav
-import Views.SearchResult as SearchResult
-import Actions.Main as Actions
+import Views.Layout as Layout
 
 
 -- VIEW
 
 
+view : State.Model -> Html Actions.Msg
 view state =
     div []
         [ bulma.css
         , fontAwesome.css
-        , navView state.searchState
-        , SearchResult.view state.searchState
+        , Layout.view state
         ]
-
-
-navView searchState =
-    App.map Actions.SearchMsg <| Nav.view searchState

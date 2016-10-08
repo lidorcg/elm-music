@@ -1,9 +1,21 @@
-query searchTracks($query: String!) {
+query search($query: String!) {
   searchTracks(query: $query) {
     name
+    artists
+    duration
     youtubeId
-    artists {
+  }
+}
+
+query playlists {
+  playlists {
+    id
+    name
+    tracks {
       name
+      artists
+      duration
+      youtubeId
     }
   }
 }
