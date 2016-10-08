@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html.App as App
 import Views.Main as View
-import State.Main as State
+import Stores.Main as State
 
 
 main : Program Never

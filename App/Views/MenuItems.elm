@@ -1,11 +1,11 @@
 module Views.MenuItems exposing (view, Model)
 
+import Actions.Main as Actions
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
 import List exposing (map)
 import Maybe exposing (withDefault)
-import State.Display as Display
 
 
 -- MODEL
@@ -34,19 +34,19 @@ type alias Playlist =
 -- VIEW
 
 
-view : Model -> Html Display.Msg
+view : Model -> Html Actions.Msg
 view model =
     ul
         [ class "menu-list" ]
         (viewItems model)
 
 
-viewItems : Model -> List (Html Display.Msg)
+viewItems : Model -> List (Html Actions.Msg)
 viewItems model =
     map (viewItem model.active) model.playlists
 
 
-viewItem : String -> Playlist -> Html Display.Msg
+viewItem : String -> Playlist -> Html Actions.Msg
 viewItem active playlist =
     let
         isActive =
@@ -58,7 +58,7 @@ viewItem active playlist =
         li
             []
             [ a
-                [ class isActive, onClick (Display.ShowList playlist.id) ]
+                [ class isActive, onClick (Actions.ShowPlaylist playlist.id) ]
                 [ text name ]
             ]
 

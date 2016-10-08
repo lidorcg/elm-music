@@ -1,42 +1,36 @@
 module Views.SearchForm exposing (view)
 
-import Html.App as App
+import Stores.Search as Search
+import Actions.Main as Actions
 import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput)
 import Html.Attributes exposing (class, type', placeholder)
-import State.Search as Search
-import State.Main as State
 import Utils.RemoteData exposing (..)
 
 
 -- VIEW
 
 
-view : Search.Model -> Html State.Msg
+view : Search.Model -> Html Actions.Msg
 view searchState =
     let
         isLoading =
             isResultLoading searchState.result
     in
-        form [ onSubmit State.Search ]
+        form [ onSubmit Actions.Search ]
             [ p [ class "nav-item control has-addons" ]
-                [ App.map State.SearchMsg <| viewInput
+                [ input
+                    [ class "input"
+                    , placeholder "Find music"
+                    , type' "text"
+                    , onInput Actions.ChangeQuery
+                    ]
+                    []
                 , button
                     [ class <| "button is-info " ++ isLoading ]
                     [ text "Search" ]
                 ]
             ]
-
-
-viewInput : Html Search.Msg
-viewInput =
-    input
-        [ class "input"
-        , placeholder "Find music"
-        , type' "text"
-        , onInput Search.Input
-        ]
-        []
 
 
 isResultLoading : RemoteData a b -> String

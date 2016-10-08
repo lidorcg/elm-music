@@ -1,17 +1,18 @@
 module Views.Layout exposing (view)
 
+import Stores.Main as State
+import Actions.Main as Actions
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Views.Menu as Menu
 import Views.Nav as Nav
 import Views.Content as Content
-import State.Main as State
 
 
 -- VIEW
 
 
-view : State.Model -> Html State.Msg
+view : State.Model -> Html Actions.Msg
 view state =
     div
         [ class "columns is-gapless" ]

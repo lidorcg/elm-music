@@ -1,18 +1,18 @@
 module Views.Menu exposing (view)
 
-import Html.App as App
+import Stores.Main as State
+import Actions.Main as Actions
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
-import Views.MenuItems as MenuItems
-import State.Display as Display
 import Utils.RemoteData exposing (..)
-import State.Main as State
+import Stores.Display as Display
+import Views.MenuItems as MenuItems
 
 
 -- VIEW
 
 
-view : State.Model -> Html State.Msg
+view : State.Model -> Html Actions.Msg
 view state =
     aside
         [ class "menu" ]
@@ -26,7 +26,7 @@ view state =
         ]
 
 
-viewMenuList : State.Model -> Html State.Msg
+viewMenuList : State.Model -> Html Actions.Msg
 viewMenuList state =
     case state.playlists of
         NotAsked ->
@@ -46,7 +46,7 @@ viewMenuList state =
                 model =
                     MenuItems.Model active playlists.playlists
             in
-                App.map State.DisplayMsg <| MenuItems.view model
+                MenuItems.view model
 
 
 isDisplayingPlaylist : Display.Display -> String

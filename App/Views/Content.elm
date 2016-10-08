@@ -1,19 +1,20 @@
 module Views.Content exposing (view)
 
+import Stores.Main as State
+import Actions.Main as Actions
 import Html exposing (..)
-import Views.TrackList as TrackList
-import State.Main as State
-import State.Display as Display
-import State.Playlists as Playlists
-import State.Search as Search
-import List exposing (filter, head)
+import Stores.Display as Display
+import Stores.Playlists as Playlists
+import Stores.Search as Search
 import Utils.RemoteData exposing (..)
+import List exposing (filter, head)
+import Views.TrackList as TrackList
 
 
 -- VIEW
 
 
-view : State.Model -> Html State.Msg
+view : State.Model -> Html Actions.Msg
 view state =
     case state.display of
         Display.List id ->
@@ -23,20 +24,20 @@ view state =
             displaySearchResult state.search
 
         Display.Nothing ->
-            TrackList.view []
+            p [] [ text "There is nothing to show" ]
 
 
-displayList : String -> Playlists.Model -> Html State.Msg
+displayList : String -> Playlists.Model -> Html Actions.Msg
 displayList id playlists =
     case playlists of
         NotAsked ->
-            TrackList.view []
+            p [] [ text "It's seems that we didn't even try to get this playlist" ]
 
         Loading ->
-            TrackList.view []
+            p [] [ text "We're fetching your playlist right now" ]
 
         Failure err ->
-            TrackList.view []
+            p [] [ text "We couldn't fetch your playlist" ]
 
         Success res ->
             let
@@ -45,23 +46,23 @@ displayList id playlists =
             in
                 case playlist of
                     Nothing ->
-                        TrackList.view []
+                        p [] [ text "There's nothing here" ]
 
                     Just p ->
                         TrackList.view p.tracks
 
 
-displaySearchResult : Search.Model -> Html State.Msg
+displaySearchResult : Search.Model -> Html Actions.Msg
 displaySearchResult search =
     case search.result of
         NotAsked ->
-            TrackList.view []
+            p [] [ text "It's seems that we didn't even try to search your music" ]
 
         Loading ->
-            TrackList.view []
+            p [] [ text "We're fetching your music right now" ]
 
         Failure err ->
-            TrackList.view []
+            p [] [ text "We couldn't fetch your music" ]
 
         Success res ->
             TrackList.view res.searchTracks

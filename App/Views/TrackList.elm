@@ -1,17 +1,14 @@
 module Views.TrackList exposing (view)
 
+import Actions.Main as Actions
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import List exposing (map)
-import String exposing (toInt)
 import Maybe exposing (withDefault)
+import String exposing (toInt)
 
 
 -- MODEL
-
-
-type alias Model =
-    List Track
 
 
 type alias Track =
@@ -26,7 +23,7 @@ type alias Track =
 -- VIEW
 
 
-view : List Track -> Html msg
+view : List Track -> Html Actions.Msg
 view trackList =
     let
         trackRows =
@@ -45,7 +42,7 @@ view trackList =
             ]
 
 
-trackRow : Track -> Html msg
+trackRow : Track -> Html Actions.Msg
 trackRow track =
     let
         name =
@@ -86,12 +83,15 @@ viewDuration t =
                     ms // 1000 `rem` 60
 
                 zeroPadding =
-                  if seconds < 10 then "0" else ""
+                    if seconds < 10 then
+                        "0"
+                    else
+                        ""
             in
                 toString minutes ++ ":" ++ zeroPadding ++ toString seconds
 
 
-viewYoutubeLink : Maybe String -> Html msg
+viewYoutubeLink : Maybe String -> Html Actions.Msg
 viewYoutubeLink ytId =
     case ytId of
         Nothing ->

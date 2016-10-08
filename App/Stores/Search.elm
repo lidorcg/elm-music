@@ -1,9 +1,9 @@
-module State.Search exposing (..)
+module Stores.Search exposing (..)
 
+import Actions.Main exposing (..)
 import Utils.RemoteData exposing (..)
 import GraphQL.Music exposing (search, SearchResult)
 import Debug exposing (log)
-import Http exposing (Error)
 import Task exposing (perform)
 
 
@@ -12,7 +12,8 @@ import Task exposing (perform)
 
 type alias Model =
     { query : String
-    , result : WebData SearchResult }
+    , result : WebData SearchResult
+    }
 
 
 init : Model
@@ -24,32 +25,28 @@ init =
 -- UPDATE
 
 
-type Msg
-    = Input String
-    | FetchData
-    | FetchSucceed SearchResult
-    | FetchFail Http.Error
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Input string ->
+        ChangeQuery string ->
             ( { model | query = string }
             , Cmd.none
             )
 
-        FetchData ->
+        Search ->
             ( { model | result = Loading }
-            , search { query = model.query } |> perform FetchFail FetchSucceed
+            , search { query = model.query } |> perform FetchSearchFail FetchSearchSucceed
             )
 
-        FetchSucceed result ->
+        FetchSearchFail error ->
+            ( { model | result = Failure (log "error" error) }
+            , Cmd.none
+            )
+
+        FetchSearchSucceed result ->
             ( { model | result = Success result }
             , Cmd.none
             )
 
-        FetchFail error ->
-            ( { model | result = Failure (log "error" error) }
-            , Cmd.none
-            )
+        _ ->
+            ( model, Cmd.none )

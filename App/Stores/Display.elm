@@ -1,4 +1,7 @@
-module State.Display exposing (..)
+module Stores.Display exposing (..)
+
+import Actions.Main exposing (..)
+
 
 -- MODEL
 
@@ -22,16 +25,14 @@ init =
 -- UPDATE
 
 
-type Msg
-    = ShowList String
-    | ShowSearch
-
-
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        ShowList id ->
+        ShowPlaylist id ->
             List id
 
-        ShowSearch ->
+        Search ->
             SearchResult
+
+        _ ->
+            model
