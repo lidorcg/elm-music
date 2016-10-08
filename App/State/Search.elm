@@ -1,23 +1,23 @@
 module State.Search exposing (..)
 
+import Utils.RemoteData exposing (..)
+import GraphQL.Music exposing (search, SearchResult)
 import Debug exposing (log)
 import Http exposing (Error)
 import Task exposing (perform)
-import GraphQL.Music exposing (search, SearchResult)
-import Models.RemoteData exposing (..)
+
 
 -- MODEL
 
 
-type alias State =
+type alias Model =
     { query : String
-    , result : WebData SearchResult
-    }
+    , result : WebData SearchResult }
 
 
-init : State
+init : Model
 init =
-    State "" NotAsked
+    Model "" NotAsked
 
 
 
@@ -25,31 +25,31 @@ init =
 
 
 type Msg
-    = ChangeQuery String
-    | SearchTracks
+    = Input String
+    | FetchData
     | FetchSucceed SearchResult
     | FetchFail Http.Error
 
 
-update : Msg -> State -> ( State, Cmd Msg )
-update msg state =
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
     case msg of
-        ChangeQuery input ->
-            ( { state | query = input }
+        Input string ->
+            ( { model | query = string }
             , Cmd.none
             )
 
-        SearchTracks ->
-            ( { state | result = Loading }
-            , search { query = state.query } |> perform FetchFail FetchSucceed
+        FetchData ->
+            ( { model | result = Loading }
+            , search { query = model.query } |> perform FetchFail FetchSucceed
             )
 
         FetchSucceed result ->
-            ( { state | result = Success result }
+            ( { model | result = Success result }
             , Cmd.none
             )
 
         FetchFail error ->
-            ( { state | result = Failure (log "error" error) }
+            ( { model | result = Failure (log "error" error) }
             , Cmd.none
             )

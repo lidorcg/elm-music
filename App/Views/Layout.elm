@@ -5,13 +5,13 @@ import Html.Attributes exposing (..)
 import Views.Menu as Menu
 import Views.Nav as Nav
 import Views.Content as Content
-import State.Main as Main
+import State.Main as State
 
 
 -- VIEW
 
 
-view : Main.State -> Html Main.Msg
+view : State.Model -> Html State.Msg
 view state =
     div
         [ class "columns is-gapless" ]

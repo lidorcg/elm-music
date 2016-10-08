@@ -1,25 +1,29 @@
 module State.Main exposing (..)
 
+import State.Playlists as Playlists
 import State.Search as Search
-import State.Lists as Lists
-import State.Content as Content
+import State.Display as Display
 
 
 -- MODEL
 
 
-type alias State =
-    { searchState : Search.State
-    , listsState : Lists.State
-    , contentState : Content.State
+type alias Model =
+    { playlists : Playlists.Model
+    , search : Search.Model
+    , display : Display.Model
     }
 
 
-init : ( State, Cmd a )
+init : ( Model, Cmd Msg )
 init =
-    ( State Search.init Lists.init Content.init
-    , Cmd.none
-    )
+    let
+        ( playlists, pcmd ) =
+            Playlists.init
+    in
+        ( Model playlists Search.init Display.init
+        , Cmd.map PlaylistMsg pcmd
+        )
 
 
 
@@ -27,50 +31,45 @@ init =
 
 
 type Msg
-    = SearchMsg Search.Msg
-    | ListsMsg Lists.Msg
+    = PlaylistMsg Playlists.Msg
+    | SearchMsg Search.Msg
+    | DisplayMsg Display.Msg
+    | Search
 
 
-update : Msg -> State -> ( State, Cmd Msg )
-update msg state =
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
     case msg of
-        SearchMsg searchMsg ->
+        PlaylistMsg pmsg ->
             let
-                ( updatedSearchState, searchCmd ) =
-                    Search.update searchMsg state.searchState
-
-                ( updatedlistsState, updatedcontentState ) =
-                    case searchMsg of
-                        Search.ChangeQuery input ->
-                            ( state.listsState, state.contentState )
-
-                        _ ->
-                            ( Lists.update (Lists.SetActiveList Nothing) state.listsState
-                            , Content.update (Content.SetContent Content.Search) state.contentState
-                            )
+                ( playlists, cmd ) =
+                    Playlists.update pmsg model.playlists
             in
-                ( { state
-                    | searchState = updatedSearchState
-                    , listsState = updatedlistsState
-                  }
-                , Cmd.map SearchMsg searchCmd
-                )
+                ( { model | playlists = playlists }, Cmd.map PlaylistMsg cmd )
 
-        ListsMsg listsMsg ->
+        SearchMsg smsg ->
             let
-                updatedListsState =
-                    Lists.update listsMsg state.listsState
-
-                updatedcontentState =
-                  case listsMsg of
-                    Lists.SetActiveList index ->
-                      case index of
-                        Nothing ->
-                          state.contentState
-
-                        Just i ->
-                          Content.update (Content.SetContent <| Content.List i) state.contentState
+                ( search, cmd ) =
+                    Search.update smsg model.search
             in
-                ( { state | listsState = updatedListsState }
-                , Cmd.none
+                ( { model | search = search }, Cmd.map SearchMsg cmd )
+
+        DisplayMsg dmsg ->
+            let
+                display =
+                    Display.update dmsg model.display
+            in
+                ( { model | display = display }, Cmd.none )
+
+        Search ->
+            let
+                ( search, scmd ) =
+                    Search.update Search.FetchData model.search
+
+                display =
+                   Display.update Display.ShowSearch model.display
+
+            in
+                ( { model | search = search, display = display }
+                , Cmd.map SearchMsg scmd
                 )

@@ -1,9 +1,6 @@
-module Models.RemoteData exposing (..)
+module Utils.RemoteData exposing (..)
 
 import Http exposing (Error)
-
-
--- MODEL
 
 
 type RemoteData e a
