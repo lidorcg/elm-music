@@ -1,4 +1,4 @@
-module Stores.Display exposing (..)
+module Reducers.Display exposing (..)
 
 import Actions.Main exposing (..)
 

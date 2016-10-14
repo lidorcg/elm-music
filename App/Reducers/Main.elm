@@ -1,9 +1,9 @@
-module Stores.Main exposing (..)
+module Reducers.Main exposing (..)
 
 import Actions.Main exposing (..)
-import Stores.Playlists as Playlists
-import Stores.Search as Search
-import Stores.Display as Display
+import Reducers.Playlists as Playlists
+import Reducers.Search as Search
+import Reducers.Display as Display
 
 
 -- MODEL

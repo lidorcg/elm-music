@@ -1,4 +1,4 @@
-module Stores.Search exposing (..)
+module Reducers.Search exposing (..)
 
 import Actions.Main exposing (..)
 import Utils.RemoteData exposing (..)

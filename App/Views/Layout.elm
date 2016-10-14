@@ -1,6 +1,6 @@
 module Views.Layout exposing (view)
 
-import Stores.Main as State
+import Reducers.Main as State
 import Actions.Main as Actions
 import Html exposing (..)
 import Html.Attributes exposing (..)

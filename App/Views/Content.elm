@@ -1,11 +1,11 @@
 module Views.Content exposing (view)
 
-import Stores.Main as State
+import Reducers.Main as State
 import Actions.Main as Actions
 import Html exposing (..)
-import Stores.Display as Display
-import Stores.Playlists as Playlists
-import Stores.Search as Search
+import Reducers.Display as Display
+import Reducers.Playlists as Playlists
+import Reducers.Search as Search
 import Utils.RemoteData exposing (..)
 import List exposing (filter, head)
 import Views.TrackList as TrackList

@@ -1,4 +1,4 @@
-module Stores.Playlists exposing (..)
+module Reducers.Playlists exposing (..)
 
 import Actions.Main exposing (..)
 import Utils.RemoteData exposing (..)

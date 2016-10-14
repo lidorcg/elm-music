@@ -1,6 +1,6 @@
 module Views.SearchForm exposing (view)
 
-import Stores.Search as Search
+import Reducers.Search as Search
 import Actions.Main as Actions
 import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput)
