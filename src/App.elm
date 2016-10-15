@@ -1,4 +1,4 @@
-module Main exposing (..)
+module App exposing (..)
 
 import Html.App as App
 import Views.Main as View

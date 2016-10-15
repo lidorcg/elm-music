@@ -5,8 +5,8 @@
     "license": "BSD3",
     "source-directories": [
         ".",
-        "./App",
-        "GraphQL/elm-graphql/src"
+        "./src",
+        "./elm-graphql/src"
     ],
     "exposed-modules": [],
     "dependencies": {
