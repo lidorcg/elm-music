@@ -10,8 +10,8 @@ import List exposing (map, filter, head)
 import Maybe exposing (withDefault)
 import String exposing (toInt)
 import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+import Html.Attributes exposing (class, href, style, placeholder, type')
+import Html.Events exposing (onClick, onSubmit, onInput)
 import CDN exposing (bulma, fontAwesome)
 
 
@@ -34,9 +34,9 @@ main =
 
 type alias Model =
     { display : Display
-    , playlists : WebData PlaylistsResult
+    , playlists : RemoteData PlaylistsResult
     , query : String
-    , searchResult : WebData SearchResult
+    , searchResult : RemoteData SearchResult
     }
 
 
@@ -242,7 +242,7 @@ searchFrom model =
                 _ ->
                     ""
     in
-        Html.form [ onSubmit Search ]
+        form [ onSubmit Search ]
             [ p [ class "nav-item control has-addons" ]
                 [ input
                     [ class "input"
@@ -268,7 +268,7 @@ content model =
             displaySearchResult model
 
 
-displayList : String -> WebData PlaylistsResult -> Html Msg
+displayList : String -> RemoteData PlaylistsResult -> Html Msg
 displayList id playlists =
     case playlists of
         NotAsked ->
