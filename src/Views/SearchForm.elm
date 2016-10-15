@@ -33,7 +33,7 @@ view searchState =
             ]
 
 
-isResultLoading : RemoteData a b -> String
+isResultLoading : RemoteData a -> String
 isResultLoading result =
     case result of
         Loading ->

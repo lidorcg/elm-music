@@ -30,13 +30,13 @@ viewMenuList : State.Model -> Html Actions.Msg
 viewMenuList state =
     case state.playlists of
         NotAsked ->
-            p [] [ text "We couldn't even send the request to the server" ]
+            p [] [ text "We haven't asked for your playlists yet" ]
 
         Loading ->
             p [] [ text "We're fetching your playlists now" ]
 
         Failure err ->
-            p [] [ text "There's seems to be a problem" ]
+            p [] [ text "We ran into an error, see the console for more info" ]
 
         Success playlists ->
             let

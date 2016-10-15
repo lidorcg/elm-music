@@ -31,13 +31,13 @@ displayList : String -> Playlists.Model -> Html Actions.Msg
 displayList id playlists =
     case playlists of
         NotAsked ->
-            p [] [ text "It's seems that we didn't even try to get this playlist" ]
+            p [] [ text "We haven't asked for this playlist yet" ]
 
         Loading ->
             p [] [ text "We're fetching your playlist right now" ]
 
         Failure err ->
-            p [] [ text "We couldn't fetch your playlist" ]
+            p [] [ text "We ran into an error, see the console for more info" ]
 
         Success res ->
             let
@@ -46,7 +46,7 @@ displayList id playlists =
             in
                 case playlist of
                     Nothing ->
-                        p [] [ text "There's nothing here" ]
+                        p [] [ text "There's no playlist here, we should probably check the DB" ]
 
                     Just p ->
                         TrackList.view p.tracks
@@ -56,13 +56,13 @@ displaySearchResult : Search.Model -> Html Actions.Msg
 displaySearchResult search =
     case search.result of
         NotAsked ->
-            p [] [ text "It's seems that we didn't even try to search your music" ]
+            p [] [ text "Try Searching for music..." ]
 
         Loading ->
             p [] [ text "We're fetching your music right now" ]
 
         Failure err ->
-            p [] [ text "We couldn't fetch your music" ]
+            p [] [ text "We ran into an error, see the console for more info" ]
 
         Success res ->
             TrackList.view res.searchTracks

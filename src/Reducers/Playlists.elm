@@ -11,7 +11,7 @@ import Debug exposing (log)
 
 
 type alias Model =
-    WebData PlaylistsResult
+    RemoteData PlaylistsResult
 
 
 init : ( Model, Cmd Msg )

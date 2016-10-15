@@ -12,7 +12,7 @@ import Task exposing (perform)
 
 type alias Model =
     { query : String
-    , result : WebData SearchResult
+    , result : RemoteData SearchResult
     }
 
 
