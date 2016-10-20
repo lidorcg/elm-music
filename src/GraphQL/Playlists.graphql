@@ -1,0 +1,12 @@
+query allPlaylists {
+  allPlaylists {
+    id
+    name
+    tracks {
+      name
+      artists
+      duration
+      youtubeId
+    }
+  }
+}
