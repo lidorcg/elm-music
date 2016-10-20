@@ -2,7 +2,7 @@ module Reducers.Search exposing (..)
 
 import Actions.Main exposing (..)
 import Utils.RemoteData exposing (..)
-import GraphQL.Music exposing (search, SearchResult)
+import GraphQL.Discover exposing (search, SearchResult)
 import Debug exposing (log)
 import Task exposing (perform)
 

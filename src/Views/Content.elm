@@ -17,7 +17,7 @@ import Views.TrackList as TrackList
 view : State.Model -> Html Actions.Msg
 view state =
     case state.display of
-        Display.List id ->
+        Display.Playlist id ->
             displayList id state.playlists
 
         Display.SearchResult ->
@@ -42,7 +42,7 @@ displayList id playlists =
         Success res ->
             let
                 playlist =
-                    filter (\p -> p.id == id) res.playlists |> head
+                    filter (\p -> p.id == id) res.allPlaylists |> head
             in
                 case playlist of
                     Nothing ->

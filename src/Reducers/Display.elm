@@ -7,7 +7,7 @@ import Actions.Main exposing (..)
 
 
 type Display
-    = List String
+    = Playlist String
     | SearchResult
     | Nothing
 
@@ -29,7 +29,7 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         ShowPlaylist id ->
-            List id
+            Playlist id
 
         Search ->
             SearchResult

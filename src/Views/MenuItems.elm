@@ -13,7 +13,7 @@ import Maybe exposing (withDefault)
 
 type alias Model =
     { active : String
-    , playlists : List Playlist
+    , allPlaylists : List Playlist
     }
 
 
@@ -43,7 +43,7 @@ view model =
 
 viewItems : Model -> List (Html Actions.Msg)
 viewItems model =
-    map (viewItem model.active) model.playlists
+    map (viewItem model.active) model.allPlaylists
 
 
 viewItem : String -> Playlist -> Html Actions.Msg

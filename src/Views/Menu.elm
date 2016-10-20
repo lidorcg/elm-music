@@ -44,7 +44,7 @@ viewMenuList state =
                     isDisplayingPlaylist state.display
 
                 model =
-                    MenuItems.Model active playlists.playlists
+                    MenuItems.Model active playlists.allPlaylists
             in
                 MenuItems.view model
 
@@ -52,7 +52,7 @@ viewMenuList state =
 isDisplayingPlaylist : Display.Display -> String
 isDisplayingPlaylist display =
     case display of
-        Display.List id ->
+        Display.Playlist id ->
             id
 
         _ ->

@@ -2,7 +2,7 @@ module Reducers.Playlists exposing (..)
 
 import Actions.Main exposing (..)
 import Utils.RemoteData exposing (..)
-import GraphQL.Music exposing (playlists, PlaylistsResult)
+import GraphQL.Playlists exposing (allPlaylists, AllPlaylistsResult)
 import Task exposing (perform, Task)
 import Debug exposing (log)
 
@@ -11,7 +11,7 @@ import Debug exposing (log)
 
 
 type alias Model =
-    RemoteData PlaylistsResult
+    RemoteData AllPlaylistsResult
 
 
 init : ( Model, Cmd Msg )
@@ -32,7 +32,7 @@ update msg model =
     case msg of
         FetchPlaylistsData ->
             ( Loading
-            , playlists |> perform FetchPlaylistsFail FetchPlaylistsSucceed
+            , allPlaylists |> perform FetchPlaylistsFail FetchPlaylistsSucceed
             )
 
         FetchPlaylistsFail error ->
