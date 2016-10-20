@@ -3,7 +3,7 @@ module Views.Menu exposing (view)
 import Reducers.Main as State
 import Actions.Main as Actions
 import Html exposing (..)
-import Html.Attributes exposing (class, href)
+import Html.Attributes exposing (class, href, style)
 import Utils.RemoteData exposing (..)
 import Reducers.Display as Display
 import Views.MenuItems as MenuItems
@@ -22,6 +22,7 @@ view state =
                 [ class "title is-2 has-text-centered" ]
                 [ text "Music" ]
             ]
+        , hr [ style [ ( "margin", "10px" ) ] ] []
         , viewMenuList state
         ]
 
