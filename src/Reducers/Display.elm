@@ -6,19 +6,25 @@ import Actions.Main exposing (..)
 -- MODEL
 
 
-type Display
+type DisplayMain
     = Playlist String
     | SearchResult
-    | Nothing
+
+
+type DisplayModal
+    = NewPlaylistForm
+    | None
 
 
 type alias Model =
-    Display
+    { main : DisplayMain
+    , modal : DisplayModal
+    }
 
 
 init : Model
 init =
-    Nothing
+    Model SearchResult None
 
 
 
@@ -28,11 +34,20 @@ init =
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        ShowPlaylist id ->
-            Playlist id
+        SearchFormSubmit ->
+            { model | main = SearchResult }
 
-        Search ->
-            SearchResult
+        DisplayPlaylist id ->
+            { model | main = Playlist id }
 
+        DisplayNewPlaylistForm ->
+            { model | modal = NewPlaylistForm }
+
+        CloseNewPlaylistForm ->
+            { model | modal = None }
+
+        NewPlaylistFormSubmit ->
+            { model | modal = None }
+            
         _ ->
             model

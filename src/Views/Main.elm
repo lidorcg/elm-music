@@ -5,6 +5,7 @@ import Actions.Main as Actions
 import Html exposing (..)
 import CDN exposing (bulma, fontAwesome)
 import Views.Layout as Layout
+import Views.Modal as Modal
 
 
 -- VIEW
@@ -16,4 +17,5 @@ view state =
         [ bulma.css
         , fontAwesome.css
         , Layout.view state
+        , Modal.view state
         ]

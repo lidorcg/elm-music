@@ -10,3 +10,9 @@ query allPlaylists {
     }
   }
 }
+
+mutation createPlaylist($name: String!) {
+  createPlaylist(name: $name) {
+    ok
+  }
+}

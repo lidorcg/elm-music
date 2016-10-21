@@ -4,7 +4,7 @@ import Actions.Main as Actions
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import Html.Events exposing (onClick)
-import List exposing (map)
+import List exposing (map, append)
 import Maybe exposing (withDefault)
 
 
@@ -58,7 +58,7 @@ viewItem active playlist =
         li
             []
             [ a
-                [ class isActive, onClick (Actions.ShowPlaylist playlist.id) ]
+                [ class isActive, onClick (Actions.DisplayPlaylist playlist.id) ]
                 [ text name ]
             ]
 

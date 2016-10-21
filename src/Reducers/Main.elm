@@ -34,10 +34,10 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        ( playlists, pcmd ) =
+        ( playlists, playlistsCmd ) =
             Playlists.update msg model.playlists
 
-        ( search, scmd ) =
+        ( search, searchCmd ) =
             Search.update msg model.search
 
         display =
@@ -48,5 +48,5 @@ update msg model =
             , search = search
             , display = display
           }
-        , Cmd.batch [ pcmd, scmd ]
+        , Cmd.batch [ playlistsCmd, searchCmd ]
         )

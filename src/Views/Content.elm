@@ -16,20 +16,17 @@ import Views.TrackList as TrackList
 
 view : State.Model -> Html Actions.Msg
 view state =
-    case state.display of
+    case state.display.main of
         Display.Playlist id ->
             displayList id state.playlists
 
         Display.SearchResult ->
             displaySearchResult state.search
 
-        Display.Nothing ->
-            p [] [ text "There is nothing to show" ]
-
 
 displayList : String -> Playlists.Model -> Html Actions.Msg
 displayList id playlists =
-    case playlists of
+    case playlists.allPlaylistsRequest of
         NotAsked ->
             p [] [ text "We haven't asked for this playlist yet" ]
 

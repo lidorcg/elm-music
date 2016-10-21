@@ -17,13 +17,13 @@ view searchState =
         isLoading =
             isResultLoading searchState.result
     in
-        form [ onSubmit Actions.Search ]
+        form [ onSubmit Actions.SearchFormSubmit ]
             [ p [ class "nav-item control has-addons" ]
                 [ input
                     [ class "input"
                     , placeholder "Find music"
                     , type' "text"
-                    , onInput Actions.ChangeQuery
+                    , onInput Actions.SearchFormInputQuery
                     ]
                     []
                 , button

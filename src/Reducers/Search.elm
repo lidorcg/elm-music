@@ -28,22 +28,23 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ChangeQuery string ->
+        SearchFormInputQuery string ->
             ( { model | query = string }
             , Cmd.none
             )
 
-        Search ->
+        SearchFormSubmit ->
             ( { model | result = Loading }
-            , search { query = model.query } |> perform FetchSearchFail FetchSearchSucceed
+            , search { query = model.query }
+                |> perform FetchSearchResultFail FetchSearchResultSucceed
             )
 
-        FetchSearchFail error ->
+        FetchSearchResultFail error ->
             ( { model | result = Failure (log "error" error) }
             , Cmd.none
             )
 
-        FetchSearchSucceed result ->
+        FetchSearchResultSucceed result ->
             ( { model | result = Success result }
             , Cmd.none
             )

@@ -3,4 +3,4 @@ make=../../elm-graphql/tool/bin/make
 
 # list of.graphql files and their endpoints
 $make ./Discover.graphql "http://localhost:5000/discover/graphql"
-$make ./Playlists.graphql "http://localhost:5000/playlist/graphql"
+$make ./Playlists.graphql "http://localhost:5000/playlists/graphql"
