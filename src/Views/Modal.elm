@@ -1,19 +1,19 @@
 module Views.Modal exposing (view)
 
-import Reducers.Main as State
+import Reducers.State.Modal exposing (..)
 import Actions.Main as Actions
-import Reducers.Display as Display
-import Views.NewPlaylistForm exposing (newPlaylistForm)
 import Html exposing (..)
 import Html.Attributes exposing (class)
+import Views.NewPlaylistForm exposing (newPlaylistForm)
 
-view : State.Model -> Html Actions.Msg
-view state =
-  case state.display.modal of
-    Display.NewPlaylistForm ->
-      newPlaylistForm state.playlists
 
-    Display.None ->
+view : Model -> Html Actions.Msg
+view model =
+  case model.display of
+    NewPlaylistForm ->
+      newPlaylistForm
+
+    None ->
       div
         [ class "modal" ]
         [ div

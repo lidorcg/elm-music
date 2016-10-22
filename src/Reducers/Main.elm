@@ -1,30 +1,25 @@
 module Reducers.Main exposing (..)
 
 import Actions.Main exposing (..)
-import Reducers.Playlists as Playlists
-import Reducers.Search as Search
-import Reducers.Display as Display
+import Reducers.Data as Data
+import Reducers.State as State
+import Utils.SendMsg exposing (sendMsg)
 
 
 -- MODEL
 
 
 type alias Model =
-    { playlists : Playlists.Model
-    , search : Search.Model
-    , display : Display.Model
+    { data : Data.Model
+    , state : State.Model
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    let
-        ( playlists, cmd ) =
-            Playlists.init
-    in
-        ( Model playlists Search.init Display.init
-        , cmd
-        )
+    ( Model Data.init State.init
+    , sendMsg GetPlaylistsRequest
+    )
 
 
 
@@ -34,19 +29,12 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        ( playlists, playlistsCmd ) =
-            Playlists.update msg model.playlists
+        ( data, dataCmd ) =
+            Data.update msg model.data
 
-        ( search, searchCmd ) =
-            Search.update msg model.search
-
-        display =
-            Display.update msg model.display
+        ( state, stateCmd ) =
+            State.update msg model.state
     in
-        ( { model
-            | playlists = playlists
-            , search = search
-            , display = display
-          }
-        , Cmd.batch [ playlistsCmd, searchCmd ]
+        ( { model | data = data, state = state }
+        , Cmd.batch [ dataCmd, stateCmd ]
         )

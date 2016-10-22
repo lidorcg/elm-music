@@ -1,20 +1,18 @@
 module Views.Menu exposing (view)
 
-import Reducers.Main as State
+import Reducers.State.Menu exposing (Model)
 import Actions.Main as Actions
 import Html exposing (..)
 import Html.Attributes exposing (class, href, style)
 import Html.Events exposing (onClick)
-import Utils.RemoteData exposing (..)
-import Reducers.Display as Display
-import Views.MenuItems as MenuItems
+import List exposing (map)
 
 
 -- VIEW
 
 
-view : State.Model -> Html Actions.Msg
-view state =
+view : Model -> Html Actions.Msg
+view model =
     aside
         [ class "menu" ]
         [ a
@@ -27,7 +25,7 @@ view state =
         , p
             [ class "menu-label" ]
             [ text "My Playlists" ]
-        , viewMenuList state
+        , viewPlaylists model
         , p
             [ class "menu-label" ]
             [ text "Manage" ]
@@ -35,37 +33,33 @@ view state =
         ]
 
 
-viewMenuList : State.Model -> Html Actions.Msg
-viewMenuList state =
-    case state.playlists.allPlaylistsRequest of
-        NotAsked ->
-            p [] [ text "We haven't asked for your playlists yet" ]
-
-        Loading ->
-            p [] [ text "We're fetching your playlists now" ]
-
-        Failure err ->
-            p [] [ text "We ran into an error, see the console for more info" ]
-
-        Success playlists ->
-            let
-                active =
-                    isDisplayingPlaylist state.display.main
-
-                model =
-                    MenuItems.Model active playlists.allPlaylists
-            in
-                MenuItems.view model
+viewPlaylists : Model -> Html Actions.Msg
+viewPlaylists model =
+    ul
+        [ class "menu-list" ]
+        (map (viewPlaylist model.active) model.playlists)
 
 
-isDisplayingPlaylist : Display.DisplayMain -> String
-isDisplayingPlaylist display =
-    case display of
-        Display.Playlist id ->
-            id
+viewPlaylist : String -> { a | id : String, name : String } -> Html Actions.Msg
+viewPlaylist active playlist =
+    let
+        isActive =
+            isPlaylistActive active playlist.id
+    in
+        li
+            []
+            [ a
+                [ class isActive, onClick (Actions.DisplayPlaylist playlist.id) ]
+                [ text playlist.name ]
+            ]
 
-        _ ->
-            ""
+
+isPlaylistActive : String -> String -> String
+isPlaylistActive active id =
+    if active == id then
+        "is-active"
+    else
+        ""
 
 
 newPlaylistItem : Html Actions.Msg
@@ -75,7 +69,7 @@ newPlaylistItem =
         [ li
             []
             [ a
-                [ onClick (Actions.DisplayNewPlaylistForm) ]
+                [ onClick (Actions.DisplayNewPlaylistModal) ]
                 [ text "Create New Playlist" ]
             ]
         ]

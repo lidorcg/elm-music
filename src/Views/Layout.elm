@@ -1,7 +1,7 @@
 module Views.Layout exposing (view)
 
-import Reducers.Main as State
-import Actions.Main as Actions
+import Reducers.State exposing (Model)
+import Actions.Main exposing (Msg)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Views.Menu as Menu
@@ -12,22 +12,22 @@ import Views.Content as Content
 -- VIEW
 
 
-view : State.Model -> Html Actions.Msg
-view state =
+view : Model -> Html Msg
+view model =
     div
         [ class "columns is-gapless" ]
         [ div
             [ class "column is-2" ]
             [ div
                 [ class "container is-fluid is-marginless" ]
-                [ Menu.view state ]
+                [ Menu.view model.menu ]
             ]
         , div
             [ class "column" ]
             [ div
                 [ class "container is-fluid is-marginless" ]
-                [ Nav.view state
-                , Content.view state
+                [ Nav.view model.nav
+                , Content.view model.main
                 ]
             ]
         ]

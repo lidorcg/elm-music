@@ -1,23 +1,11 @@
 module Views.TrackList exposing (view)
 
+import Reducers.State.Main exposing (..)
 import Actions.Main as Actions
 import Html exposing (..)
 import Html.Attributes exposing (class, href)
 import List exposing (map)
 import Maybe exposing (withDefault)
-import String exposing (toInt)
-
-
--- MODEL
-
-
-type alias Track =
-    { name : Maybe String
-    , artists : Maybe String
-    , duration : Maybe String
-    , youtubeId : Maybe String
-    }
-
 
 
 -- VIEW
@@ -45,50 +33,15 @@ view trackList =
 trackRow : Track -> Html Actions.Msg
 trackRow track =
     let
-        name =
-            track.name |> withDefault "Unknown Name"
-
-        artist =
-            track.artists |> withDefault "Unknown Artist"
-
-        duration =
-            track.duration |> viewDuration
-
-        youtubeId =
+        youtubeIcon =
             track.youtubeId |> viewYoutubeLink
     in
         tr []
-            [ td [] [ text name ]
-            , td [] [ text artist ]
-            , td [] [ text duration ]
-            , td [ class "is-icon" ] [ youtubeId ]
+            [ td [] [ text track.name ]
+            , td [] [ text track.artists ]
+            , td [] [ text track.duration ]
+            , td [ class "is-icon" ] [ youtubeIcon ]
             ]
-
-
-viewDuration : Maybe String -> String
-viewDuration t =
-    case t of
-        Nothing ->
-            "Unknown Duration"
-
-        Just time ->
-            let
-                ms =
-                    Result.withDefault 0 (toInt time)
-
-                minutes =
-                    ms // 1000 // 60
-
-                seconds =
-                    ms // 1000 `rem` 60
-
-                zeroPadding =
-                    if seconds < 10 then
-                        "0"
-                    else
-                        ""
-            in
-                toString minutes ++ ":" ++ zeroPadding ++ toString seconds
 
 
 viewYoutubeLink : Maybe String -> Html Actions.Msg

@@ -1,19 +1,18 @@
 module Views.NewPlaylistForm exposing (newPlaylistForm)
 
-import Reducers.Playlists as Playlists
 import Actions.Main as Actions
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type', style)
 import Html.Events exposing (onSubmit, onInput, onClick)
 
 
-newPlaylistForm : Playlists.Model -> Html Actions.Msg
-newPlaylistForm newPlaylistState =
+newPlaylistForm : Html Actions.Msg
+newPlaylistForm =
     div
         [ class "modal is-active" ]
         [ div
             [ class "modal-background"
-            , onClick Actions.CloseNewPlaylistForm
+            , onClick Actions.CloseNewPlaylistModal
             , style [ ( "background-color", "rgba(17, 17, 17, 0.16)" ) ]
             ]
             []
@@ -46,6 +45,6 @@ newPlaylistForm newPlaylistState =
                 ]
             ]
         , button
-            [ class "modal-close", onClick Actions.CloseNewPlaylistForm ]
+            [ class "modal-close", onClick Actions.CloseNewPlaylistModal ]
             []
         ]

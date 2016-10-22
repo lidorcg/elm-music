@@ -9,22 +9,30 @@ import Http exposing (Error)
 
 
 type Msg
-    =
-    -- Display
-      DisplayPlaylist String
-    | DisplayNewPlaylistForm
-    | CloseNewPlaylistForm
-    -- Playlists
-    | FetchPlaylists
-    | FetchPlaylistsFail Http.Error
-    | FetchPlaylistsSucceed AllPlaylistsResult
-    -- Search
-    | SearchFormInputQuery String
+    = ---- STATE EVENTS ----
+      -- Nav
+      SearchFormInputQuery String
     | SearchFormSubmit
-    | FetchSearchResultFail Http.Error
-    | FetchSearchResultSucceed SearchResult
-    -- NewPlaylist
+      -- Menu
+    | DisplayPlaylist String
+    | DisplayNewPlaylistModal
+      -- Modal
+    | CloseNewPlaylistModal
     | NewPlaylistFormInputName String
     | NewPlaylistFormSubmit
-    | CreateNewPlaylistFail Http.Error
-    | CreateNewPlaylistSucceed CreatePlaylistResult
+      ---- STATE DATA EVENTS ----
+    | SearchResponse (Result Http.Error SearchResult)
+    | GetPlaylistsResponse (Result Http.Error AllPlaylistsResult)
+      ---- REMOTE DATA EVENTS ----
+      -- Search
+    | SearchRequest String
+    | SearchRequestError Http.Error
+    | SearchRequestOk SearchResult
+      -- Get Playlists
+    | GetPlaylistsRequest
+    | GetPlaylistsRequestError Http.Error
+    | GetPlaylistsRequestOk AllPlaylistsResult
+      -- Create New Playlist
+    | CreateNewPlaylistRequest String
+    | CreateNewPlaylistRequestError Http.Error
+    | CreateNewPlaylistRequestOk CreatePlaylistResult
