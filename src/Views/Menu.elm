@@ -1,6 +1,7 @@
 module Views.Menu exposing (view)
 
 import Reducers.State.Menu exposing (Model)
+import Reducers.State.DragAndDrop exposing (dropablePlaylist)
 import Actions.Main as Actions
 import Html exposing (..)
 import Html.Attributes exposing (class, href, style)
@@ -42,16 +43,21 @@ viewPlaylists model =
 
 viewPlaylist : String -> { a | id : String, name : String } -> Html Actions.Msg
 viewPlaylist active playlist =
-    let
-        isActive =
-            isPlaylistActive active playlist.id
-    in
-        li
-            []
-            [ a
-                [ class isActive, onClick (Actions.DisplayPlaylist playlist.id) ]
-                [ text playlist.name ]
-            ]
+  dropablePlaylist (playlistItem active playlist) playlist.id
+
+
+playlistItem : String -> { a | id : String, name : String } -> Html Actions.Msg
+playlistItem active playlist =
+  let
+      isActive =
+          isPlaylistActive active playlist.id
+  in
+      li
+          []
+          [ a
+              [ class isActive, onClick (Actions.DisplayPlaylist playlist.id) ]
+              [ text playlist.name ]
+          ]
 
 
 isPlaylistActive : String -> String -> String

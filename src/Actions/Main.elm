@@ -36,3 +36,17 @@ type Msg
     | CreateNewPlaylistRequest String
     | CreateNewPlaylistRequestError Http.Error
     | CreateNewPlaylistRequestOk CreatePlaylistResult
+      -- Drag And Droped
+    | DragTrackToPlaylist Track String
+    | Drag Track
+    | Drop
+    | Enter String
+    | Leave
+
+
+type alias Track =
+    { name : String
+    , artists : String
+    , duration : String
+    , youtubeId : Maybe String
+    }

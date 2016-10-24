@@ -1,7 +1,7 @@
 module App exposing (..)
 
 import Html.App as App
-import Views.Main as View
+import Views.Layout as View
 import Reducers.Main as State
 
 

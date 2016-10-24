@@ -5,6 +5,7 @@ import Reducers.State.Nav as Nav
 import Reducers.State.Menu as Menu
 import Reducers.State.Main as Main
 import Reducers.State.Modal as Modal
+import Reducers.State.DragAndDrop as Dnd
 
 
 -- MODEL
@@ -15,6 +16,7 @@ type alias Model =
     , menu : Menu.Model
     , main : Main.Model
     , modal : Modal.Model
+    , dnd : Dnd.Model
     }
 
 
@@ -25,6 +27,7 @@ init =
         Menu.init
         Main.init
         Modal.init
+        Dnd.init
 
 
 
@@ -45,17 +48,22 @@ update msg model =
 
         ( modal, modalCmd ) =
             Modal.update msg model.modal
+
+        ( dnd, dndCmd ) =
+            Dnd.update msg model.dnd
     in
         ( { model
             | nav = nav
             , menu = menu
             , main = main
             , modal = modal
+            , dnd = dnd
           }
         , Cmd.batch
             [ navCmd
             , menuCmd
             , mainCmd
             , modalCmd
+            , dndCmd
             ]
         )

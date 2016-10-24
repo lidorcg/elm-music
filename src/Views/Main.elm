@@ -1,21 +1,37 @@
 module Views.Main exposing (view)
 
-import Reducers.Main exposing (Model)
-import Actions.Main exposing (Msg)
+import Reducers.State.Main exposing (..)
+import Actions.Main as Actions
 import Html exposing (..)
-import CDN exposing (bulma, fontAwesome)
-import Views.Layout as Layout
-import Views.Modal as Modal
+import List exposing (filter, head)
+import Views.TrackTable as TrackTable
 
 
 -- VIEW
 
 
-view : Model -> Html Msg
+view : Model -> Html Actions.Msg
 view model =
-    div []
-        [ bulma.css
-        , fontAwesome.css
-        , Layout.view model.state
-        , Modal.view model.state.modal
-        ]
+    case model.display of
+        ShowPlaylist id ->
+            displayPlaylist id model.playlists
+
+        SearchResult ->
+            TrackTable.view model.searchResult
+
+        None ->
+            div [] []
+
+
+displayPlaylist : String -> List Playlist -> Html Actions.Msg
+displayPlaylist id playlists =
+    let
+        playlist =
+            filter (\p -> p.id == id) playlists |> head
+    in
+        case playlist of
+            Nothing ->
+                p [] [ text "There's no playlist here, we should probably check the DB" ]
+
+            Just p ->
+                TrackTable.view p.tracks

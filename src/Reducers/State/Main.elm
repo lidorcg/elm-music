@@ -79,12 +79,28 @@ update msg model =
             , Cmd.none
             )
 
+        DragTrackToPlaylist track id ->
+            let
+                playlists =
+                    map (addTrackToPlaylist track id) model.playlists
+            in
+                ( { model | playlists = playlists }
+                , Cmd.none
+                )
+
         _ ->
             ( model, Cmd.none )
 
 
 
 -- UTILS
+
+
+addTrackToPlaylist track id playlist =
+    if playlist.id == id then
+        { playlist | tracks = (track :: playlist.tracks) }
+    else
+        playlist
 
 
 processPlaylists : Result Error AllPlaylistsResult -> List Playlist
