@@ -1,9 +1,9 @@
-module Components.Nav exposing (Model, init, update, view)
+module Components.UI.Nav exposing (Model, init, update, view)
 
-import Actions.Main exposing (..)
+import Actions exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class)
-import Components.Search as Search
+import Components.UI.Search as Search
 
 
 -- MODEL

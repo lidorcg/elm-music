@@ -1,6 +1,6 @@
-module Components.NewPlaylistModal exposing (Model, init, update, view)
+module Components.UI.NewPlaylistModal exposing (Model, init, update, view)
 
-import Actions.Main exposing (..)
+import Actions exposing (..)
 import Reusables.Modal as Modal
 import Utils.SendMsg exposing (sendMsg)
 import Html exposing (..)
@@ -29,12 +29,12 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        OnInput string ->
+        NewPlaylistModalOnInput string ->
             ( { model | name = string }
             , Cmd.none
             )
 
-        OnSubmit ->
+        NewPlaylistModalOnSubmit ->
             ( model
             , sendMsg (CreateNewPlaylistRequest model.name)
             )
@@ -71,7 +71,7 @@ formView =
     div
         [ class "box" ]
         [ form
-            [ onSubmit OnSubmit ]
+            [ onSubmit NewPlaylistModalOnSubmit ]
             [ label
                 [ class "label" ]
                 [ text "Name" ]
@@ -81,7 +81,7 @@ formView =
                     [ class "input"
                     , placeholder "Playlist Name"
                     , type' "text"
-                    , onInput OnInput
+                    , onInput NewPlaylistModalOnInput
                     ]
                     []
                 ]

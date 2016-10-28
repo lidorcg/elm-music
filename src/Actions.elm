@@ -1,4 +1,4 @@
-module Actions.Main exposing (..)
+module Actions exposing (..)
 
 import Reusables.Modal as Modal
 import GraphQL.Discover exposing (SearchResult)
@@ -11,18 +11,18 @@ import Http exposing (Error)
 
 
 type Msg
-    = ---- COMPONENTS EVENTS ----
+    = ---- UI COMPONENTS EVENTS ----
       -- Search
-      SearchFormInputQuery String
-    | SearchFormSubmit
+      SearchFormOnInput String
+    | SearchFormOnSubmit
       -- Menu
     | DisplayPlaylist String
     | OpenNewPlaylistModal
       -- NewPlaylistModal
-    | OnInput String
-    | OnSubmit
+    | NewPlaylistModalOnInput String
+    | NewPlaylistModalOnSubmit
     | ModalMsg Modal.Msg
-      ---- STATE DATA EVENTS ----
+      ---- LOCAL DATA EVENTS ----
     | SearchResponse (Result Http.Error SearchResult)
     | GetPlaylistsResponse (Result Http.Error AllPlaylistsResult)
       ---- REMOTE DATA EVENTS ----

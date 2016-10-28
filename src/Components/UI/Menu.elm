@@ -1,6 +1,6 @@
-module Components.Menu exposing (Model, init, update, view)
+module Components.UI.Menu exposing (Model, init, update, view)
 
-import Actions.Main exposing (..)
+import Actions exposing (..)
 import GraphQL.Playlists exposing (AllPlaylistsResult)
 import List exposing (map)
 import Maybe exposing (withDefault)
@@ -38,7 +38,7 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SearchFormSubmit ->
+        SearchFormOnSubmit ->
             ( { model | active = "" }
             , Cmd.none
             )
