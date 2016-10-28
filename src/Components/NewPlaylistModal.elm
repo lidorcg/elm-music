@@ -2,21 +2,24 @@ module Components.NewPlaylistModal exposing (Model, init, update, view)
 
 import Actions.Main exposing (..)
 import Reusables.Modal as Modal
-import Components.NewPlaylistForm as Form
+import Utils.SendMsg exposing (sendMsg)
 import Html exposing (..)
-import Html.App exposing (map)
+import Html.Attributes exposing (class, placeholder, type')
+import Html.Events exposing (onSubmit, onInput)
 
 
 -- MODEL
 
 
 type alias Model =
-    Modal.Model Form.Model
+    { name : String
+    , modal : Modal.Model
+    }
 
 
 init : Model
 init =
-    Modal.init Form.init
+    Model "" Modal.init
 
 
 
@@ -26,12 +29,33 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NewPlaylistModalMsg modalMsg ->
+        OnInput string ->
+            ( { model | name = string }
+            , Cmd.none
+            )
+
+        OnSubmit ->
+            ( model
+            , sendMsg (CreateNewPlaylistRequest model.name)
+            )
+
+        ModalMsg modalMsg ->
             let
-                ( model, cmd ) =
-                    Modal.update Form.update modalMsg model
+                modal =
+                    Modal.update modalMsg model.modal
             in
-                ( model, Cmd.map NewPlaylistModalMsg cmd )
+                ( { model | modal = modal }
+                , Cmd.none
+                )
+
+        OpenNewPlaylistModal ->
+            let
+                modal =
+                    Modal.update Modal.open model.modal
+            in
+                ( { model | modal = modal }
+                , Cmd.none
+                )
 
         _ ->
             ( model, Cmd.none )
@@ -39,4 +63,33 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    map NewPlaylistModalMsg (Modal.view Form.view model)
+    Modal.view model.modal ModalMsg formView
+
+
+formView : Html Msg
+formView =
+    div
+        [ class "box" ]
+        [ form
+            [ onSubmit OnSubmit ]
+            [ label
+                [ class "label" ]
+                [ text "Name" ]
+            , p
+                [ class "control" ]
+                [ input
+                    [ class "input"
+                    , placeholder "Playlist Name"
+                    , type' "text"
+                    , onInput OnInput
+                    ]
+                    []
+                ]
+            , p
+                [ class "control" ]
+                [ button
+                    [ class "button is-primary" ]
+                    [ text "Submit" ]
+                ]
+            ]
+        ]

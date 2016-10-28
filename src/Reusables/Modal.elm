@@ -1,4 +1,4 @@
-module Reusables.Modal exposing (Model, init, Msg, update, view)
+module Reusables.Modal exposing (Model, init, Msg, update, view, open, close)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, style)
@@ -9,64 +9,44 @@ import Html.App exposing (map)
 -- MODEL
 
 
-type alias Model a =
-    { display : Display
-    , childModel : a
-    }
-
-
-type Display
+type Model
     = Show
     | Hide
 
 
-init : a -> Model a
-init initChildModel =
-    Model Hide initChildModel
+init : Model
+init =
+    Hide
 
 
 
 -- UPDATE
 
 
-type Msg b
+type Msg
     = CloseModal
     | OpenModal
-    | ChildMsg b
 
 
-update : (b -> a -> (a, Cmd b)) -> Msg b -> Model a -> ( Model a, Cmd (Msg b) )
-update childUpdate msg model =
+update : Msg -> Model -> Model
+update msg model =
     case msg of
         CloseModal ->
-            ( { model | display = Hide }
-            , Cmd.none
-            )
+            Hide
 
         OpenModal ->
-            ( { model | display = Show }
-            , Cmd.none
-            )
-
-        ChildMsg childMsg ->
-            let
-                (childModel, childCmd) =
-                    childUpdate childMsg model.childModel
-            in
-                ( { model | childModel = childModel }
-                , Cmd.map ChildMsg childCmd
-                )
+            Show
 
 
 
 -- VIEW
 
 
-view : (mdl -> Html msg) -> Model mdl -> Html (Msg msg)
-view view model =
+view : Model -> (Msg -> a) -> Html a -> Html a
+view model msg children =
     let
         isActive =
-            case model.display of
+            case model of
                 Show ->
                     "is-active"
 
@@ -75,16 +55,40 @@ view view model =
     in
         div
             [ class ("modal " ++ isActive) ]
-            [ div
-                [ class "modal-background"
-                , onClick CloseModal
-                , style [ ( "background-color", "rgba(17, 17, 17, 0.16)" ) ]
-                ]
-                []
+            [ map msg background
             , div
                 [ class "modal-content" ]
-                [ map ChildMsg (view model.childModel) ]
-            , button
-                [ class "modal-close", onClick CloseModal ]
-                []
+                [ children ]
+            , map msg closeButton
             ]
+
+
+background : Html Msg
+background =
+    div
+        [ class "modal-background"
+        , onClick CloseModal
+        , style [ ( "background-color", "rgba(17, 17, 17, 0.16)" ) ]
+        ]
+        []
+
+
+closeButton : Html Msg
+closeButton =
+    button
+        [ class "modal-close", onClick CloseModal ]
+        []
+
+
+
+-- API
+
+
+open : Msg
+open =
+    OpenModal
+
+
+close : Msg
+close =
+    CloseModal

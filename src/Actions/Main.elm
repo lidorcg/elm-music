@@ -9,18 +9,19 @@ import Http exposing (Error)
 -- ACTIONS
 -- TODO: Try breaking by views
 
+
 type Msg
-    = ---- STATE EVENTS ----
-      -- Nav
+    = ---- COMPONENTS EVENTS ----
+      -- Search
       SearchFormInputQuery String
     | SearchFormSubmit
       -- Menu
     | DisplayPlaylist String
-    | DisplayNewPlaylistModal
-      -- Modal
-    | NewPlaylistModalMsg (Modal.Msg Msg)
-    | NewPlaylistFormInputName String
-    | NewPlaylistFormSubmit
+    | OpenNewPlaylistModal
+      -- NewPlaylistModal
+    | OnInput String
+    | OnSubmit
+    | ModalMsg Modal.Msg
       ---- STATE DATA EVENTS ----
     | SearchResponse (Result Http.Error SearchResult)
     | GetPlaylistsResponse (Result Http.Error AllPlaylistsResult)
@@ -37,11 +38,3 @@ type Msg
     | CreateNewPlaylistRequest String
     | CreateNewPlaylistRequestError Http.Error
     | CreateNewPlaylistRequestOk CreatePlaylistResult
-
-
-type alias Track =
-    { name : String
-    , artists : String
-    , duration : String
-    , youtubeId : Maybe String
-    }

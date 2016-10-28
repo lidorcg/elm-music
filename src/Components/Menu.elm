@@ -152,7 +152,7 @@ newPlaylistItem =
         [ li
             []
             [ a
-                [ onClick (DisplayNewPlaylistModal) ]
+                [ onClick OpenNewPlaylistModal ]
                 [ text "Create New Playlist" ]
             ]
         ]
