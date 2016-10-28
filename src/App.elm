@@ -1,15 +1,14 @@
 module App exposing (..)
 
 import Html.App as App
-import Views.Layout as View
-import Reducers.Main as State
+import Components.Layout as Main
 
 
 main : Program Never
 main =
     App.program
-        { init = State.init
-        , view = View.view
-        , update = State.update
+        { init = Main.init
+        , update = Main.update
+        , view = Main.view
         , subscriptions = (always Sub.none)
         }

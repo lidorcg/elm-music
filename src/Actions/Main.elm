@@ -1,12 +1,13 @@
 module Actions.Main exposing (..)
 
+import Reusables.Modal as Modal
 import GraphQL.Discover exposing (SearchResult)
 import GraphQL.Playlists exposing (AllPlaylistsResult, CreatePlaylistResult)
 import Http exposing (Error)
 
 
 -- ACTIONS
-
+-- TODO: Try breaking by views
 
 type Msg
     = ---- STATE EVENTS ----
@@ -17,7 +18,7 @@ type Msg
     | DisplayPlaylist String
     | DisplayNewPlaylistModal
       -- Modal
-    | CloseNewPlaylistModal
+    | NewPlaylistModalMsg (Modal.Msg Msg)
     | NewPlaylistFormInputName String
     | NewPlaylistFormSubmit
       ---- STATE DATA EVENTS ----
@@ -36,12 +37,6 @@ type Msg
     | CreateNewPlaylistRequest String
     | CreateNewPlaylistRequestError Http.Error
     | CreateNewPlaylistRequestOk CreatePlaylistResult
-      -- Drag And Droped
-    | DragTrackToPlaylist Track String
-    | Drag Track
-    | Drop
-    | Enter String
-    | Leave
 
 
 type alias Track =
