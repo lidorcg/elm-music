@@ -1,6 +1,5 @@
 module Actions.Main exposing (..)
 
-import Reusables.Modal as Modal
 import GraphQL.Discover exposing (SearchResult)
 import GraphQL.Playlists exposing (AllPlaylistsResult, CreatePlaylistResult)
 import Http exposing (Error)
@@ -8,6 +7,7 @@ import Http exposing (Error)
 
 -- ACTIONS
 -- TODO: Try breaking by views
+
 
 type Msg
     = ---- STATE EVENTS ----
@@ -18,7 +18,8 @@ type Msg
     | DisplayPlaylist String
     | DisplayNewPlaylistModal
       -- Modal
-    | NewPlaylistModalMsg (Modal.Msg Msg)
+    | ShowNewPlaylistModal
+    | HideNewPlaylistModal
     | NewPlaylistFormInputName String
     | NewPlaylistFormSubmit
       ---- STATE DATA EVENTS ----
@@ -37,11 +38,3 @@ type Msg
     | CreateNewPlaylistRequest String
     | CreateNewPlaylistRequestError Http.Error
     | CreateNewPlaylistRequestOk CreatePlaylistResult
-
-
-type alias Track =
-    { name : String
-    , artists : String
-    , duration : String
-    , youtubeId : Maybe String
-    }

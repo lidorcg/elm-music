@@ -67,7 +67,7 @@ view model =
                 [ div
                     [ class "container is-fluid is-marginless" ]
                     [ Nav.view model.nav
-                      --, Main.view model.main
+                    , Main.view model.main
                     ]
                 ]
             , Modals.view model.modals
