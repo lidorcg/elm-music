@@ -1,4 +1,4 @@
-module Components.UI.NewPlaylistModal exposing (Model, init, update, view)
+module Components.DOM.NewPlaylistModal exposing (Model, init, update, view)
 
 import Actions exposing (..)
 import Reusables.Modal as Modal

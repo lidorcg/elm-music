@@ -1,9 +1,9 @@
-module Components.UI.Index exposing (Model, init, update, view)
+module Components.DOM.Index exposing (Model, init, update, view)
 
 import Actions exposing (..)
 import Html exposing (..)
 import CDN exposing (bulma, fontAwesome)
-import Components.UI.Layout as Layout
+import Components.DOM.Layout as Layout
 
 
 -- MODEL

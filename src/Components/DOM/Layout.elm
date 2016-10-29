@@ -1,11 +1,11 @@
-module Components.UI.Layout exposing (Model, init, update, view)
+module Components.DOM.Layout exposing (Model, init, update, view)
 
 import Actions exposing (Msg)
 import Html exposing (..)
 import Html.Attributes exposing (class)
-import Components.UI.Nav as Nav
-import Components.UI.Menu as Menu
-import Components.UI.Modals as Modals
+import Components.DOM.Nav as Nav
+import Components.DOM.Menu as Menu
+import Components.DOM.Modals as Modals
 
 
 -- MODEL

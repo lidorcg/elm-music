@@ -1,40 +1,22 @@
 module Actions exposing (..)
 
-import Reusables.Modal as Modal
-import GraphQL.Discover exposing (SearchResult)
-import GraphQL.Playlists exposing (AllPlaylistsResult, CreatePlaylistResult)
+import Models exposing (Track)
 import Http exposing (Error)
-
+import GraphQL.Playlists exposing (PlayListsResult)
+import GraphQL.Discover exposing (SearchResult)
 
 -- ACTIONS
--- TODO: Try breaking by views
 
-
-type Msg
-    = ---- UI COMPONENTS EVENTS ----
-      -- Search
-      SearchFormOnInput String
-    | SearchFormOnSubmit
-      -- Menu
+type Action
+    = Search String
     | DisplayPlaylist String
-    | OpenNewPlaylistModal
-      -- NewPlaylistModal
-    | NewPlaylistModalOnInput String
-    | NewPlaylistModalOnSubmit
-    | ModalMsg Modal.Msg
-      ---- LOCAL DATA EVENTS ----
-    | SearchResponse (Result Http.Error SearchResult)
-    | GetPlaylistsResponse (Result Http.Error AllPlaylistsResult)
-      ---- REMOTE DATA EVENTS ----
-      -- Search
-    | SearchRequest String
+    | AddTrackToPlaylist Track String
+    | RemoveTrack String
+    | CreateNewPlaylist String
+    | RenamePlaylist
+    | DeletePlaylist
+    -- REMOTE DATA
+    | PlaylistsRequestError Http.Error
+    | PlaylistsRequestOk PlayListsResult
     | SearchRequestError Http.Error
     | SearchRequestOk SearchResult
-      -- Get Playlists
-    | GetPlaylistsRequest
-    | GetPlaylistsRequestError Http.Error
-    | GetPlaylistsRequestOk AllPlaylistsResult
-      -- Create New Playlist
-    | CreateNewPlaylistRequest String
-    | CreateNewPlaylistRequestError Http.Error
-    | CreateNewPlaylistRequestOk CreatePlaylistResult

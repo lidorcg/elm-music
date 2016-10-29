@@ -1,4 +1,4 @@
-module Components.UI.Menu exposing (Model, init, update, view)
+module Components.DOM.Menu exposing (Model, init, update, view)
 
 import Actions exposing (..)
 import GraphQL.Playlists exposing (AllPlaylistsResult)

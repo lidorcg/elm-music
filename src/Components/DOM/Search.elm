@@ -1,4 +1,4 @@
-module Components.UI.Search exposing (Model, init, update, view)
+module Components.DOM.Search exposing (Model, init, update, view)
 
 import Actions exposing (..)
 import Html exposing (..)

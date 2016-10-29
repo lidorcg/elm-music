@@ -1,7 +1,7 @@
-module Components.UI.Modals exposing (Model, init, update, view)
+module Components.DOM.Modals exposing (Model, init, update, view)
 
 import Actions exposing (..)
-import Components.UI.NewPlaylistModal as NewPlaylistModal
+import Components.DOM.NewPlaylistModal as NewPlaylistModal
 import Html exposing (..)
 
 -- MODEL
