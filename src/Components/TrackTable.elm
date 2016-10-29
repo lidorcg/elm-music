@@ -1,6 +1,7 @@
 module Components.TrackTable exposing (Model, init, update, view)
 
-import Actions.Main exposing (..)
+import Actions exposing (..)
+import Utils.Models exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, href, style)
 import List exposing (map)
@@ -12,14 +13,6 @@ import Maybe exposing (withDefault)
 
 type alias Model =
     List Track
-
-
-type alias Track =
-    { name : String
-    , artists : String
-    , duration : String
-    , youtubeId : Maybe String
-    }
 
 
 init : Model

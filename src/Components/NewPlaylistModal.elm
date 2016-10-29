@@ -1,7 +1,8 @@
 module Components.NewPlaylistModal exposing (Model, init, update, view)
 
-import Actions.Main exposing (..)
-import Utils.SendMsg exposing (sendMsg)
+import Actions exposing (..)
+import GraphQL.Playlists exposing (CreatePlaylistResult, createPlaylist)
+import Task exposing (perform)
 import Html exposing (..)
 import Html.Attributes exposing (class, placeholder, type', style)
 import Html.Events exposing (onSubmit, onInput, onClick)
@@ -48,9 +49,10 @@ update msg model =
             , Cmd.none
             )
 
-        NewPlaylistFormSubmit ->
-            ( model
-            , sendMsg (CreateNewPlaylistRequest model.name)
+        CreateNewPlaylist ->
+            ( { model | display = Hide }
+            , createPlaylist { name = model.name }
+                |> perform CreateNewPlaylistResponseError CreateNewPlaylistResponseOk
             )
 
         _ ->
@@ -81,7 +83,7 @@ view model =
                 [ div
                     [ class "box" ]
                     [ form
-                        [ onSubmit NewPlaylistFormSubmit ]
+                        [ onSubmit CreateNewPlaylist ]
                         [ label
                             [ class "label" ]
                             [ text "Name" ]

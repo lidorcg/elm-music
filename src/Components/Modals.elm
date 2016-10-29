@@ -1,6 +1,6 @@
 module Components.Modals exposing (Model, init, update, view)
 
-import Actions.Main exposing (..)
+import Actions exposing (..)
 import Components.NewPlaylistModal as NewPlaylistModal
 import Html exposing (..)
 

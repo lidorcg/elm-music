@@ -1,8 +1,9 @@
-query allPlaylists {
-  allPlaylists {
+query playlists {
+  playlists {
     id
     name
     tracks {
+      id
       name
       artists
       duration
@@ -11,8 +12,15 @@ query allPlaylists {
   }
 }
 
+
 mutation createPlaylist($name: String!) {
   createPlaylist(name: $name) {
+    ok
+  }
+}
+
+mutation addTrack($track: TrackInput!, $playlistId: Int) {
+  addTrack(track: $track, playlistId: $playlistId) {
     ok
   }
 }

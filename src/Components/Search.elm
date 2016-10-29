@@ -1,6 +1,8 @@
 module Components.Search exposing (Model, init, update, view)
 
-import Actions.Main exposing (..)
+import Actions exposing (..)
+import GraphQL.Discover exposing (SearchResult, search)
+import Task exposing (perform)
 import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput)
 import Html.Attributes exposing (class, type', placeholder)
@@ -27,17 +29,23 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SearchFormInputQuery string ->
+        ChangeSearchQuery string ->
             ( { model | query = string }
             , Cmd.none
             )
 
-        SearchFormSubmit ->
+        Search ->
             ( { model | isLoading = True }
+            , search { query = model.query }
+                |> perform SearchResponseError SearchResponseOk
+            )
+
+        SearchResponseError _ ->
+            ( { model | isLoading = False }
             , Cmd.none
             )
 
-        SearchResponse _ ->
+        SearchResponseOk _ ->
             ( { model | isLoading = False }
             , Cmd.none
             )
@@ -59,13 +67,13 @@ view model =
             else
                 ""
     in
-        form [ onSubmit SearchFormSubmit ]
+        form [ onSubmit Search ]
             [ p [ class "nav-item control has-addons" ]
                 [ input
                     [ class "input"
                     , placeholder "Find music"
                     , type' "text"
-                    , onInput SearchFormInputQuery
+                    , onInput ChangeSearchQuery
                     ]
                     []
                 , button

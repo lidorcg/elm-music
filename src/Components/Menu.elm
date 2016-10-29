@@ -1,21 +1,20 @@
 module Components.Menu exposing (Model, init, update, view)
 
-import Actions.Main exposing (..)
-import GraphQL.Playlists exposing (AllPlaylistsResult)
+import Actions exposing (..)
+import Utils.RemoteData exposing (..)
+import GraphQL.Playlists exposing (PlaylistsResult)
 import List exposing (map)
 import Maybe exposing (withDefault)
-import Http
 import Html exposing (..)
 import Html.Attributes exposing (class, href, style)
 import Html.Events exposing (onClick)
-
 
 
 -- MODEL
 
 
 type alias Model =
-    { playlists : List Playlist
+    { playlists : RemoteData (List Playlist)
     , active : String
     }
 
@@ -28,7 +27,7 @@ type alias Playlist =
 
 init : Model
 init =
-    Model [] ""
+    Model NotAsked ""
 
 
 
@@ -38,12 +37,17 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SearchFormSubmit ->
+        Search ->
             ( { model | active = "" }
             , Cmd.none
             )
 
-        SearchResponse _ ->
+        SearchResponseError _ ->
+            ( { model | active = "" }
+            , Cmd.none
+            )
+
+        SearchResponseOk _ ->
             ( { model | active = "" }
             , Cmd.none
             )
@@ -53,12 +57,12 @@ update msg model =
             , Cmd.none
             )
 
-        GetPlaylistsResponse result ->
+        FetchPlaylistsResponseOk result ->
             let
                 playlists =
-                    processAllPlaylists result
+                    processPlaylists result
             in
-                ( { model | playlists = playlists }
+                ( { model | playlists = Success playlists }
                 , Cmd.none
                 )
 
@@ -66,14 +70,9 @@ update msg model =
             ( model, Cmd.none )
 
 
-processAllPlaylists : Result Http.Error AllPlaylistsResult -> List Playlist
-processAllPlaylists result =
-    case result of
-        Err error ->
-            []
-
-        Ok result ->
-            map processPlaylist result.allPlaylists
+processPlaylists : PlaylistsResult -> List Playlist
+processPlaylists result =
+    map processPlaylist result.playlists
 
 
 processPlaylist : { a | id : String, name : Maybe String } -> Playlist
@@ -113,21 +112,27 @@ view model =
 
 viewPlaylists : Model -> Html Msg
 viewPlaylists model =
-    ul
-        [ class "menu-list" ]
-        (map (viewPlaylist model.active) model.playlists)
+    case model.playlists of
+        Success playlists ->
+            ul
+                [ class "menu-list" ]
+                (map (viewPlaylist model.active) playlists)
+
+        Loading ->
+            p [] [ text "Loading your music now" ]
+
+        _ ->
+            p [] [ text "Opps, we couldn't fetch your music :(" ]
 
 
 viewPlaylist : String -> Playlist -> Html Msg
 viewPlaylist active playlist =
-    playlistItem active playlist
-
-
-playlistItem : String -> Playlist -> Html Msg
-playlistItem active playlist =
     let
         isActive =
-            isPlaylistActive active playlist.id
+            if active == playlist.id then
+                "is-active"
+            else
+                ""
     in
         li
             []
@@ -137,14 +142,6 @@ playlistItem active playlist =
             ]
 
 
-isPlaylistActive : String -> String -> String
-isPlaylistActive active id =
-    if active == id then
-        "is-active"
-    else
-        ""
-
-
 newPlaylistItem : Html Msg
 newPlaylistItem =
     ul
@@ -152,7 +149,7 @@ newPlaylistItem =
         [ li
             []
             [ a
-                [ onClick (DisplayNewPlaylistModal) ]
+                [ onClick ShowNewPlaylistModal ]
                 [ text "Create New Playlist" ]
             ]
         ]

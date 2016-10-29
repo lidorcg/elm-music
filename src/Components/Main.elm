@@ -1,12 +1,13 @@
 module Components.Main exposing (Model, init, update, view)
 
-import Actions.Main exposing (..)
+import Actions exposing (..)
+import Utils.Models exposing (..)
+import Utils.RemoteData exposing (..)
 import GraphQL.Discover exposing (SearchResult)
-import GraphQL.Playlists exposing (AllPlaylistsResult)
-import Http exposing (Error)
+import GraphQL.Playlists exposing (PlaylistsResult)
 import List exposing (map, filter, head)
 import Maybe exposing (withDefault)
-import String exposing (toInt)
+import Debug exposing (log)
 import Html exposing (..)
 import Components.TrackTable as TrackTable
 
@@ -16,8 +17,8 @@ import Components.TrackTable as TrackTable
 
 type alias Model =
     { display : Display
-    , searchResult : List Track
-    , playlists : List Playlist
+    , searchResult : RemoteData (List Track)
+    , playlists : RemoteData (List Playlist)
     }
 
 
@@ -27,16 +28,9 @@ type Display
     | None
 
 
-
-type alias Playlist =
-    { id : String
-    , tracks : List Track
-    }
-
-
 init : Model
 init =
-    Model None [] []
+    Model None NotAsked NotAsked
 
 
 
@@ -46,28 +40,25 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SearchFormSubmit ->
-            ( { model | display = SearchResult }
+        Search ->
+            ( { model | display = SearchResult, searchResult = Loading }
             , Cmd.none
             )
 
-        SearchResponse result ->
-            let
-                tracks =
-                    processTracks result
-            in
-                ( { model | display = SearchResult, searchResult = tracks }
-                , Cmd.none
-                )
+        SearchResponseError error ->
+            ( { model | searchResult = Failure <| log "error" error }
+            , Cmd.none
+            )
 
-        GetPlaylistsResponse result ->
-            let
-                playlists =
-                    processPlaylists result
-            in
-                ( { model | playlists = playlists }
-                , Cmd.none
-                )
+        SearchResponseOk result ->
+            ( { model | searchResult = Success <| processSearchResult result }
+            , Cmd.none
+            )
+
+        FetchPlaylistsResponseOk result ->
+            ( { model | playlists = Success <| processPlaylists result }
+            , Cmd.none
+            )
 
         DisplayPlaylist id ->
             ( { model | display = ShowPlaylist id }
@@ -89,75 +80,14 @@ addTrackToPlaylist track id playlist =
         playlist
 
 
-processPlaylists : Result Error AllPlaylistsResult -> List Playlist
+processPlaylists : PlaylistsResult -> List Playlist
 processPlaylists result =
-    case result of
-        Err error ->
-            []
-
-        Ok result ->
-            map processPlaylist result.allPlaylists
+    map remotePlaylistToPlaylist result.playlists
 
 
-processPlaylist : { b | id : String, tracks : List { a | artists : Maybe String, duration : Maybe String, name : Maybe String, youtubeId : Maybe String } } -> Playlist
-processPlaylist playlist =
-    let
-        tracks =
-            map processTrack playlist.tracks
-    in
-        Playlist playlist.id tracks
-
-
-processTracks : Result Http.Error SearchResult -> List Track
-processTracks result =
-    case result of
-        Err error ->
-            []
-
-        Ok result ->
-            map processTrack result.searchTracks
-
-
-processTrack : { a | artists : Maybe String, duration : Maybe String, name : Maybe String, youtubeId : Maybe String } -> Track
-processTrack track =
-    let
-        name =
-            track.name |> withDefault "Unknown Name"
-
-        artist =
-            track.artists |> withDefault "Unknown Artist"
-
-        duration =
-            track.duration |> processDuration
-    in
-        Track name artist duration track.youtubeId
-
-
-processDuration : Maybe String -> String
-processDuration t =
-    case t of
-        Nothing ->
-            "Unknown Duration"
-
-        Just time ->
-            let
-                ms =
-                    Result.withDefault 0 (toInt time)
-
-                minutes =
-                    ms // 1000 // 60
-
-                seconds =
-                    ms // 1000 `rem` 60
-
-                zeroPadding =
-                    if seconds < 10 then
-                        "0"
-                    else
-                        ""
-            in
-                toString minutes ++ ":" ++ zeroPadding ++ toString seconds
-
+processSearchResult : SearchResult -> List Track
+processSearchResult result =
+    map remoteSearchTrackToTrack result.searchTracks
 
 
 
@@ -168,24 +98,45 @@ view : Model -> Html Actions.Msg
 view model =
     case model.display of
         ShowPlaylist id ->
-            displayPlaylist id model.playlists
+            viewPlaylist id model.playlists
 
         SearchResult ->
-            TrackTable.view model.searchResult
+            viewSearchResult model.searchResult
 
         None ->
             div [] []
 
 
-displayPlaylist : String -> List Playlist -> Html Actions.Msg
-displayPlaylist id playlists =
-    let
-        playlist =
-            filter (\p -> p.id == id) playlists |> head
-    in
-        case playlist of
-            Nothing ->
-                p [] [ text "There's no playlist here, we should probably check the DB" ]
+viewPlaylist : String -> RemoteData (List Playlist) -> Html Msg
+viewPlaylist id playlists =
+    case playlists of
+        Loading ->
+            p [] [ text "We're loading your music right now..." ]
 
-            Just p ->
-                TrackTable.view p.tracks
+        Success playlists ->
+            let
+                playlist =
+                    filter (\p -> p.id == id) playlists |> head
+            in
+                case playlist of
+                    Nothing ->
+                        p [] [ text "There's no playlist here, we should probably check the DB" ]
+
+                    Just p ->
+                        TrackTable.view p.tracks
+
+        _ ->
+            p [] [ text "We ran into a problem, see the log" ]
+
+
+viewSearchResult : RemoteData (List Track) -> Html Msg
+viewSearchResult searchResult =
+    case searchResult of
+        Loading ->
+            p [] [ text "We're searching right now..." ]
+
+        Success result ->
+            TrackTable.view result
+
+        _ ->
+            p [] [ text "We ran into a problem, see the log" ]

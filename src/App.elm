@@ -1,14 +1,14 @@
 module App exposing (..)
 
 import Html.App as App
-import Components.Layout as Main
+import Components.Index as Index
 
 
 main : Program Never
 main =
     App.program
-        { init = Main.init
-        , update = Main.update
-        , view = Main.view
+        { init = Index.init
+        , update = Index.update
+        , view = Index.view
         , subscriptions = (always Sub.none)
         }
