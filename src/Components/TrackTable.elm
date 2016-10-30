@@ -3,9 +3,11 @@ module Components.TrackTable exposing (Model, init, update, view)
 import Actions exposing (..)
 import Utils.Models exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (class, href, style)
+import Html.Attributes exposing (class, href, style, draggable)
 import List exposing (map)
 import Maybe exposing (withDefault)
+import Components.DragAndDrop exposing (dragableTrack)
+
 
 
 -- MODEL
@@ -26,7 +28,9 @@ init =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+  case msg of
+    _ ->
+      ( model, Cmd.none )
 
 
 
@@ -42,7 +46,8 @@ view trackList =
         table [ class "table" ]
             [ thead []
                 [ tr []
-                    [ th [] [ text "Name" ]
+                    [ th [] [ text "Drag" ]
+                    , th [] [ text "Name" ]
                     , th [] [ text "Artist" ]
                     , th [] [ text "Duration" ]
                     , th [] [ text "ytID" ]
@@ -59,7 +64,8 @@ trackRow track =
             track.youtubeId |> viewYoutubeLink
     in
         tr []
-            [ td [] [ text track.name ]
+            [ dragableTrack track grabHandle 
+            , td [] [ text track.name ]
             , td [] [ text track.artists ]
             , td [] [ text track.duration ]
             , td [ class "is-icon" ] [ youtubeIcon ]

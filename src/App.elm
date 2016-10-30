@@ -10,5 +10,5 @@ main =
         { init = Index.init
         , update = Index.update
         , view = Index.view
-        , subscriptions = (always Sub.none)
+        , subscriptions = Index.subscriptions
         }

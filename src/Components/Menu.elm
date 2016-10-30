@@ -8,6 +8,7 @@ import Maybe exposing (withDefault)
 import Html exposing (..)
 import Html.Attributes exposing (class, href, style)
 import Html.Events exposing (onClick)
+import Components.DragAndDrop exposing (dropablePlaylist)
 
 
 -- MODEL
@@ -134,12 +135,13 @@ viewPlaylist active playlist =
             else
                 ""
     in
-        li
-            []
-            [ a
-                [ class isActive, onClick (DisplayPlaylist playlist.id) ]
-                [ text playlist.name ]
-            ]
+        dropablePlaylist playlist.id <|
+            li
+                []
+                [ a
+                    [ class isActive, onClick (DisplayPlaylist playlist.id) ]
+                    [ text playlist.name ]
+                ]
 
 
 newPlaylistItem : Html Msg

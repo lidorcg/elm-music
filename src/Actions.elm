@@ -4,6 +4,7 @@ import Utils.Models exposing (Track)
 import GraphQL.Discover exposing (SearchResult)
 import GraphQL.Playlists exposing (PlaylistsResult, CreatePlaylistResult)
 import Http exposing (Error)
+import Mouse exposing (Position)
 
 
 type Msg
@@ -19,8 +20,9 @@ type Msg
     | NewPlaylistFormInputName String
     | CreateNewPlaylist
       -- DragAndDrop
-    | DragTrack Track
-    | DropTrack
+    | DragTrack Track Position 
+    | DragAt Position
+    | DropTrack Position
     | EnterPlaylist String
     | LeavePlaylist
       ---- REMOTE DATA EVENTS ----
