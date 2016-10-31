@@ -56,7 +56,7 @@ update msg model =
 
         FetchPlaylistsSucceed result ->
             ( { model
-                | playlists = Success <| processPlaylists result
+                | playlists = Success <| processPlaylists result.playlists
               }
             , Cmd.none
             )
@@ -89,7 +89,6 @@ update msg model =
                 |> perform CreateNewPlaylistResponseError CreateNewPlaylistResponseOk
             )
 
--- TODO: handle create new playlist response
         CreateNewPlaylistResponseError error ->
             ( { model
                 | playlists = Failure (log "error" error)
@@ -98,14 +97,16 @@ update msg model =
             )
 
         CreateNewPlaylistResponseOk result ->
-            ( model
+            ( { model
+                | playlists = Success <| processPlaylists result.createPlaylist.playlists
+              }
             , Cmd.none
             )
 
 
-processPlaylists : PlaylistsResult -> List Playlist
-processPlaylists result =
-    map remotePlaylistToPlaylist result.playlists
+processPlaylists : List RemotePlaylist -> List Playlist
+processPlaylists playlists =
+    map remotePlaylistToPlaylist playlists
 
 
 processSearchResult : SearchResult -> List Track

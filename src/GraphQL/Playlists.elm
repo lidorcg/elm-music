@@ -14,7 +14,7 @@ endpointUrl =
     "http://localhost:5000/playlists/graphql"
 
 
-type alias PlaylistsResult
+type alias PlaylistsResult 
     = { playlists : (List     { id : String
     , name : (Maybe String)
     , tracks : (List         { id : String
@@ -32,7 +32,7 @@ playlists =
     let graphQLQuery = """query playlists { playlists { id name tracks { id name artists duration youtubeId } } }""" in
     let graphQLParams =
             Json.Encode.object
-                [
+                [ 
                 ]
     in
     GraphQL.query endpointUrl graphQLQuery "playlists" (encode 0 graphQLParams) playlistsResult
@@ -51,8 +51,17 @@ playlistsResult =
         `apply` (maybe ("youtubeId" := string))))))))
 
 
-type alias CreatePlaylistResult
+type alias CreatePlaylistResult 
     = { createPlaylist :     { ok : (Maybe Bool)
+    , playlists : (List         { id : String
+        , name : (Maybe String)
+        , tracks : (List             { id : String
+            , name : (Maybe String)
+            , artists : (Maybe String)
+            , duration : (Maybe String)
+            , youtubeId : (Maybe String)
+            })
+        })
     }
 }
 
@@ -60,7 +69,7 @@ type alias CreatePlaylistResult
 createPlaylist :     { name : String
     } -> Task Http.Error CreatePlaylistResult
 createPlaylist params =
-    let graphQLQuery = """mutation createPlaylist($name: String!) { createPlaylist(name: $name) { ok } }""" in
+    let graphQLQuery = """mutation createPlaylist($name: String!) { createPlaylist(name: $name) { ok playlists { id name tracks { id name artists duration youtubeId } } } }""" in
     let graphQLParams =
             Json.Encode.object
                 [ ("name", Json.Encode.string params.name)
@@ -72,4 +81,13 @@ createPlaylist params =
 createPlaylistResult : Decoder CreatePlaylistResult
 createPlaylistResult =
     map CreatePlaylistResult ("createPlaylist" :=
-        (map (\ok -> { ok = ok }) (maybe ("ok" := bool))))
+        (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool))
+        `apply` ("playlists" :=
+        (list (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)
+        `apply` (maybe ("name" := string))
+        `apply` ("tracks" :=
+        (list (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)
+        `apply` (maybe ("name" := string))
+        `apply` (maybe ("artists" := string))
+        `apply` (maybe ("duration" := string))
+        `apply` (maybe ("youtubeId" := string))))))))))

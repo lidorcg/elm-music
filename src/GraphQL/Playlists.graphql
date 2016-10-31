@@ -16,5 +16,16 @@ query playlists {
 mutation createPlaylist($name: String!) {
   createPlaylist(name: $name) {
     ok
+    playlists {
+      id
+      name
+      tracks {
+        id
+        name
+        artists
+        duration
+        youtubeId
+      }
+    }
   }
 }
