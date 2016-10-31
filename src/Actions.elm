@@ -1,4 +1,4 @@
-module Actions.Main exposing (..)
+module Actions exposing (..)
 
 import GraphQL.Discover exposing (SearchResult)
 import GraphQL.Playlists exposing (AllPlaylistsResult)
@@ -10,7 +10,7 @@ import Http exposing (Error)
 
 type Msg
     = ShowPlaylist String
-    | FetchPlaylistsData
+    | FetchPlaylists
     | FetchPlaylistsFail Http.Error
     | FetchPlaylistsSucceed AllPlaylistsResult
     | ChangeQuery String
