@@ -1,7 +1,7 @@
 module Actions exposing (..)
 
 import GraphQL.Discover exposing (SearchResult)
-import GraphQL.Playlists exposing (AllPlaylistsResult)
+import GraphQL.Playlists exposing (PlaylistsResult, CreatePlaylistResult)
 import Http exposing (Error)
 
 
@@ -9,11 +9,26 @@ import Http exposing (Error)
 
 
 type Msg
-    = ShowPlaylist String
-    | FetchPlaylists
-    | FetchPlaylistsFail Http.Error
-    | FetchPlaylistsSucceed AllPlaylistsResult
-    | ChangeQuery String
+    =
+      -- Search
+      SearchFormInputQuery String
     | Search
-    | FetchSearchFail Http.Error
-    | FetchSearchSucceed SearchResult
+    | SearchFail Http.Error
+    | SearchSucceed SearchResult
+      -- Display Playlist
+    | FetchPlaylistsFail Http.Error
+    | FetchPlaylistsSucceed PlaylistsResult
+    | ShowPlaylist String
+      -- Create New Playlist
+    | ShowNewPlaylistModal
+    | HideNewPlaylistModal
+    | NewPlaylistFormInputName String
+    | CreateNewPlaylist
+    | CreateNewPlaylistResponseError Http.Error
+    | CreateNewPlaylistResponseOk CreatePlaylistResult
+      -- Rename Playlist
+      -- Delete Playlist
+      -- Add Track To Playlist
+      -- Remove Track From Playlist
+      -- Edit Track On Playlist
+      -- Create New Track

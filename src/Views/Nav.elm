@@ -1,7 +1,7 @@
 module Views.Nav exposing (view)
 
-import Reducers.Main as State
-import Actions.Main as Actions
+import State exposing (..)
+import Actions exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Views.SearchForm as SearchForm
@@ -10,9 +10,9 @@ import Views.SearchForm as SearchForm
 -- VIEW
 
 
-view : State.Model -> Html Actions.Msg
+view : Model -> Html Msg
 view state =
     nav [ class "nav" ]
         [ div [ class "nav-left" ]
-            [ SearchForm.view state.search ]
+            [ SearchForm.view state ]
         ]

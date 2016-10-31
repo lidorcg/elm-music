@@ -1,8 +1,9 @@
 module App exposing (..)
 
 import Html.App as App
-import Views.Main as View
-import Reducers.Main as State
+import State
+import View
+import Reducer
 
 
 main : Program Never
@@ -10,6 +11,6 @@ main =
     App.program
         { init = State.init
         , view = View.view
-        , update = State.update
+        , update = Reducer.update
         , subscriptions = (always Sub.none)
         }

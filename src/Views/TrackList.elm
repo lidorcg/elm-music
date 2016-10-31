@@ -1,33 +1,19 @@
 module Views.TrackList exposing (view)
 
-import Actions.Main as Actions
+import Actions exposing (..)
+import Models exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (class, href)
-import List exposing (map)
-import Maybe exposing (withDefault)
-import String exposing (toInt)
-
-
--- MODEL
-
-
-type alias Track =
-    { name : Maybe String
-    , artists : Maybe String
-    , duration : Maybe String
-    , youtubeId : Maybe String
-    }
-
+import Html.Attributes exposing (class, href, style)
 
 
 -- VIEW
 
 
-view : List Track -> Html Actions.Msg
+view : List Track -> Html Msg
 view trackList =
     let
         trackRows =
-            map trackRow trackList
+            List.map trackRow trackList
     in
         table [ class "table" ]
             [ thead []
@@ -42,56 +28,29 @@ view trackList =
             ]
 
 
-trackRow : Track -> Html Actions.Msg
+trackRow : Track -> Html Msg
 trackRow track =
     let
-        name =
-            track.name |> withDefault "Unknown Name"
-
-        artist =
-            track.artists |> withDefault "Unknown Artist"
-
-        duration =
-            track.duration |> viewDuration
-
-        youtubeId =
+        youtubeIcon =
             track.youtubeId |> viewYoutubeLink
     in
         tr []
-            [ td [] [ text name ]
-            , td [] [ text artist ]
-            , td [] [ text duration ]
-            , td [ class "is-icon" ] [ youtubeId ]
+            [ td [] [ text track.name ]
+            , td [] [ text track.artists ]
+            , td [] [ text track.duration ]
+            , td [ class "is-icon" ] [ youtubeIcon ]
             ]
 
 
-viewDuration : Maybe String -> String
-viewDuration t =
-    case t of
-        Nothing ->
-            "Unknown Duration"
-
-        Just time ->
-            let
-                ms =
-                    Result.withDefault 0 (toInt time)
-
-                minutes =
-                    ms // 1000 // 60
-
-                seconds =
-                    ms // 1000 `rem` 60
-
-                zeroPadding =
-                    if seconds < 10 then
-                        "0"
-                    else
-                        ""
-            in
-                toString minutes ++ ":" ++ zeroPadding ++ toString seconds
+grabHandle : Html Msg
+grabHandle =
+    td [ style [ ( "cursor", "grab" ) ] ]
+        [ span [ class "icon" ]
+            [ i [ class "fa fa-bars" ] [] ]
+        ]
 
 
-viewYoutubeLink : Maybe String -> Html Actions.Msg
+viewYoutubeLink : Maybe String -> Html Msg
 viewYoutubeLink ytId =
     case ytId of
         Nothing ->

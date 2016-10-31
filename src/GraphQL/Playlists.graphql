@@ -1,12 +1,20 @@
-query allPlaylists {
-  allPlaylists {
+query playlists {
+  playlists {
     id
     name
     tracks {
+      id
       name
       artists
       duration
       youtubeId
     }
+  }
+}
+
+
+mutation createPlaylist($name: String!) {
+  createPlaylist(name: $name) {
+    ok
   }
 }

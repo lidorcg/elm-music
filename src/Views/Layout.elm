@@ -1,18 +1,18 @@
 module Views.Layout exposing (view)
 
-import Reducers.Main as State
-import Actions.Main as Actions
+import State exposing (..)
+import Actions exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Views.Menu as Menu
 import Views.Nav as Nav
-import Views.Content as Content
+import Views.Main as Main
 
 
 -- VIEW
 
 
-view : State.Model -> Html Actions.Msg
+view : Model -> Html Msg
 view state =
     div
         [ class "columns is-gapless" ]
@@ -27,7 +27,7 @@ view state =
             [ div
                 [ class "container is-fluid is-marginless" ]
                 [ Nav.view state
-                , Content.view state
+                , Main.view state
                 ]
             ]
         ]

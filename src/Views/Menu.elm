@@ -1,18 +1,17 @@
 module Views.Menu exposing (view)
 
-import Reducers.Main as State
-import Actions.Main as Actions
+import State exposing (..)
+import Actions exposing (..)
+import Models exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, href, style)
-import Utils.RemoteData exposing (..)
-import Reducers.Display as Display
-import Views.MenuItems as MenuItems
+import Html.Events exposing (onClick)
 
 
 -- VIEW
 
 
-view : State.Model -> Html Actions.Msg
+view : Model -> Html Msg
 view state =
     aside
         [ class "menu" ]
@@ -20,16 +19,23 @@ view state =
             [ class "nav-item is-brand", href "#" ]
             [ h1
                 [ class "title is-2 has-text-centered" ]
-                [ text "Music" ]
+                [ text "My Music" ]
             ]
         , hr [ style [ ( "margin", "10px" ) ] ] []
-        , viewMenuList state
+        , p
+            [ class "menu-label" ]
+            [ text "My Playlists" ]
+        , viewPlaylists state
+        , p
+            [ class "menu-label" ]
+            [ text "Manage" ]
+        , newPlaylistItem
         ]
 
 
-viewMenuList : State.Model -> Html Actions.Msg
-viewMenuList state =
-    case state.playlists of
+viewPlaylists : Model -> Html Msg
+viewPlaylists { playlists, displayMain } =
+    case playlists of
         NotAsked ->
             p [] [ text "We haven't asked for your playlists yet" ]
 
@@ -39,22 +45,59 @@ viewMenuList state =
         Failure err ->
             p [] [ text "We ran into an error, see the console for more info" ]
 
-        Success playlists ->
+        Success res ->
             let
                 active =
-                    isDisplayingPlaylist state.display
-
-                model =
-                    MenuItems.Model active playlists.allPlaylists
+                    isDisplayingPlaylist displayMain
             in
-                MenuItems.view model
+                ul
+                    [ class "menu-list" ]
+                    (List.map (viewPlaylist active) res)
 
 
-isDisplayingPlaylist : Display.Display -> String
+isDisplayingPlaylist : DisplayMain -> String
 isDisplayingPlaylist display =
     case display of
-        Display.Playlist id ->
+        DisplayPlaylist id ->
             id
 
         _ ->
             ""
+
+
+viewPlaylist : String -> Playlist -> Html Msg
+viewPlaylist active playlist =
+    let
+        isActive =
+            if active == playlist.id then
+                "is-active"
+            else
+                ""
+    in
+        li
+            []
+            [ a
+                [ class isActive, onClick (ShowPlaylist playlist.id) ]
+                [ text playlist.name ]
+            ]
+
+
+isPlaylistActive : String -> String -> String
+isPlaylistActive active id =
+    if active == id then
+        "is-active"
+    else
+        ""
+
+
+newPlaylistItem : Html Msg
+newPlaylistItem =
+    ul
+        [ class "menu-list" ]
+        [ li
+            []
+            [ a
+                [ onClick ShowNewPlaylistModal ]
+                [ text "Create New Playlist" ]
+            ]
+        ]
