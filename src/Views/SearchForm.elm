@@ -2,7 +2,7 @@ module Views.SearchForm exposing (view)
 
 import State exposing (..)
 import Actions exposing (..)
-import Models exposing (..)
+import Utils exposing (RemoteData(..),WebData)
 import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput)
 import Html.Attributes exposing (class, type', placeholder)
@@ -33,7 +33,7 @@ view {searchResult} =
             ]
 
 
-isResultLoading : RemoteData a -> String
+isResultLoading : WebData a -> String
 isResultLoading result =
     case result of
         Loading ->

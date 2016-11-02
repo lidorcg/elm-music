@@ -2,6 +2,7 @@ module State exposing (..)
 
 import Models exposing (..)
 import Actions exposing (..)
+import Utils exposing (RemoteData(..),WebData)
 import GraphQL.Playlists exposing (playlists)
 import Task exposing (perform)
 
@@ -10,23 +11,27 @@ import Task exposing (perform)
 
 
 type alias Model =
-    { searchQuery : String
-    , searchResult : RemoteData (List Track)
-    , playlists : RemoteData (List Playlist)
-    , displayMain : DisplayMain
-    , displayModal : DisplayModal
-    , newPlaylistName : String
+    { searchForm : SearchForm
+    , searchResult : WebData (List Track)
+    , playlists : WebData (List Playlist)
+    , displayMain : MainDisplay
+    , displayForm : DisplayForm
+    , newPlaylistForm : NewPlaylistForm
+    , renamePlaylistForm : RenamePlaylistForm
+    , deletePlaylistForm : DeletePlaylistForm
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { searchQuery = ""
+    ( { searchForm = SearchForm ""
       , searchResult = NotAsked
       , playlists = Loading
       , displayMain = DisplayNone
-      , displayModal = Hide
-      , newPlaylistName = ""
+      , displayForm = DisplayNoForm
+      , newPlaylistForm = NewPlaylistForm ""
+      , renamePlaylistForm = RenamePlaylistForm "" ""
+      , deletePlaylistForm = DeletePlaylistForm ""
       }
     , playlists
         |> perform FetchPlaylistsFail FetchPlaylistsSucceed

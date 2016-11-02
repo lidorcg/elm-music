@@ -29,3 +29,37 @@ mutation createPlaylist($name: String!) {
     }
   }
 }
+
+mutation renamePlaylist($id: String!, $name: String!) {
+  renamePlaylist(playlistId: $id, newName: $name) {
+    ok
+    playlists {
+      id
+      name
+      tracks {
+        id
+        name
+        artists
+        duration
+        youtubeId
+      }
+    }
+  }
+}
+
+mutation deletePlaylist($id: String!) {
+  deletePlaylist(playlistId: $id) {
+    ok
+    playlists {
+      id
+      name
+      tracks {
+        id
+        name
+        artists
+        duration
+        youtubeId
+      }
+    }
+  }
+}

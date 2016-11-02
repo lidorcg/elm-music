@@ -2,8 +2,8 @@ module Views.Index exposing (view)
 
 import State exposing (..)
 import Actions exposing (..)
+import Utils exposing (stylesheet)
 import Html exposing (..)
-import CDN exposing (bulma, fontAwesome)
 import Views.Layout as Layout
 import Views.Modals as Modals
 
@@ -14,8 +14,8 @@ import Views.Modals as Modals
 view : Model -> Html Msg
 view state =
     div []
-        [ bulma.css
-        , fontAwesome.css
+        [ stylesheet "assets/css/bulma.css"
+        , stylesheet "assets/css/font-awesome.css"
         , Layout.view state
         , Modals.view state
         ]

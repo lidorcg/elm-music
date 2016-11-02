@@ -3,24 +3,40 @@ module Models exposing (..)
 import List exposing (map, filter, head)
 import Maybe exposing (withDefault)
 import String exposing (toInt)
-import Http exposing (Error)
 
 
-type DisplayModal
-    = ShowNewPlaylist
-    | Hide
+type DisplayForm
+    = DisplayNewPlaylistForm
+    | DisplayRenamePlaylistForm
+    | DisplayDeleteForm
+    | DisplayNoForm
 
-type DisplayMain
-    = DisplayPlaylist String
+
+type MainDisplay
+    = DisplayPlaylist Playlist
     | DisplaySearchResult
     | DisplayNone
 
 
-type RemoteData a
-    = NotAsked
-    | Loading
-    | Failure Http.Error
-    | Success a
+type alias SearchForm =
+    { query : String
+    }
+
+
+type alias NewPlaylistForm =
+    { name : String
+    }
+
+
+type alias RenamePlaylistForm =
+    { id : String
+    , name : String
+    }
+
+
+type alias DeletePlaylistForm =
+    { id : String
+    }
 
 
 type alias Track =

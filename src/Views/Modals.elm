@@ -4,21 +4,23 @@ import State exposing (..)
 import Actions exposing (..)
 import Models exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (class, placeholder, type', style)
+import Html.Attributes exposing (class, placeholder, type', style, value)
 import Html.Events exposing (onSubmit, onInput, onClick)
 
 
 view : Model -> Html Msg
 view state =
-    newPlaylistModalView state
+    div []
+        [ deletePlaylistModal state
+        ]
 
 
-newPlaylistModalView : Model -> Html Msg
-newPlaylistModalView { displayModal } =
+deletePlaylistModal : Model -> Html Msg
+deletePlaylistModal { displayForm } =
     let
         isActive =
-            case displayModal of
-                ShowNewPlaylist ->
+            case displayForm of
+                DisplayDeleteForm ->
                     "is-active"
 
                 _ ->
@@ -28,39 +30,39 @@ newPlaylistModalView { displayModal } =
             [ class ("modal " ++ isActive) ]
             [ div
                 [ class "modal-background"
-                , onClick HideNewPlaylistModal
-                , style [ ( "background-color", "rgba(17, 17, 17, 0.16)" ) ]
+                , onClick HideForm
+                , style [ ( "background-color", "rgba(17, 17, 17, 0.5)" ) ]
                 ]
                 []
             , div
                 [ class "modal-content" ]
                 [ div
-                    [ class "box" ]
-                    [ form
-                        [ onSubmit CreateNewPlaylist ]
-                        [ label
-                            [ class "label" ]
-                            [ text "Name" ]
-                        , p
-                            [ class "control" ]
-                            [ input
-                                [ class "input"
-                                , placeholder "Playlist Name"
-                                , type' "text"
-                                , onInput NewPlaylistFormInputName
+                    [ class "box has-text-centered" ]
+                    [ h1
+                        [ class "title is-1" ]
+                        [ text "Are You Sure?" ]
+                    , div
+                        [ class "level" ]
+                        [ p
+                            [ class "level-item has-text-centered" ]
+                            [ a
+                                [ class "button is-large is-danger is-outlined"
+                                , onClick DeletePlaylist
                                 ]
-                                []
+                                [ text "Yes, Delete Playlist" ]
                             ]
                         , p
-                            [ class "control" ]
-                            [ button
-                                [ class "button is-primary" ]
-                                [ text "Submit" ]
+                            [ class "level-item has-text-centered" ]
+                            [ a
+                                [ class "button is-large is-primary is-outlined"
+                                , onClick HideForm
+                                ]
+                                [ text "No, Take Me Back" ]
                             ]
                         ]
                     ]
                 ]
             , button
-                [ class "modal-close", onClick HideNewPlaylistModal ]
+                [ class "modal-close", onClick HideForm ]
                 []
             ]

@@ -3,9 +3,10 @@ module Views.Menu exposing (view)
 import State exposing (..)
 import Actions exposing (..)
 import Models exposing (..)
+import Utils exposing (RemoteData(..))
 import Html exposing (..)
-import Html.Attributes exposing (class, href, style)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (id, class, href, style, placeholder, type', value, autofocus)
+import Html.Events exposing (onClick, onSubmit, onInput, onBlur)
 
 
 -- VIEW
@@ -29,13 +30,13 @@ view state =
         , p
             [ class "menu-label" ]
             [ text "Manage" ]
-        , newPlaylistItem
+        , playlistOps state
         ]
 
 
 viewPlaylists : Model -> Html Msg
-viewPlaylists { playlists, displayMain } =
-    case playlists of
+viewPlaylists state =
+    case state.playlists of
         NotAsked ->
             p [] [ text "We haven't asked for your playlists yet" ]
 
@@ -48,56 +49,123 @@ viewPlaylists { playlists, displayMain } =
         Success res ->
             let
                 active =
-                    isDisplayingPlaylist displayMain
+                    isDisplayingPlaylist state.displayMain
             in
                 ul
                     [ class "menu-list" ]
-                    (List.map (viewPlaylist active) res)
+                    ((List.map (viewPlaylist active state) res)
+                    ++ (viewNewPlaylistForm state))
 
 
-isDisplayingPlaylist : DisplayMain -> String
-isDisplayingPlaylist display =
-    case display of
-        DisplayPlaylist id ->
-            id
+isDisplayingPlaylist : MainDisplay -> String
+isDisplayingPlaylist displayMain =
+    case displayMain of
+        DisplayPlaylist playlist ->
+            playlist.id
 
         _ ->
             ""
 
 
-viewPlaylist : String -> Playlist -> Html Msg
-viewPlaylist active playlist =
-    let
-        isActive =
-            if active == playlist.id then
-                "is-active"
-            else
-                ""
-    in
+viewPlaylist : String -> Model -> Playlist -> Html Msg
+viewPlaylist active state playlist =
+    if active == playlist.id then
+        viewActivePlaylist state playlist
+    else
         li
             []
             [ a
-                [ class isActive, onClick (ShowPlaylist playlist.id) ]
+                [ onClick (ShowPlaylist playlist) ]
                 [ text playlist.name ]
             ]
 
 
-isPlaylistActive : String -> String -> String
-isPlaylistActive active id =
-    if active == id then
-        "is-active"
-    else
-        ""
+viewActivePlaylist : Model -> Playlist -> Html Msg
+viewActivePlaylist { displayForm, renamePlaylistForm } playlist =
+    case displayForm of
+        DisplayRenamePlaylistForm ->
+            li [] [ viewRenameForm renamePlaylistForm ]
+
+        _ ->
+            li
+                []
+                [ a
+                    [ class "is-active", onClick ShowRenamePlaylistForm ]
+                    [ text playlist.name ]
+                ]
 
 
-newPlaylistItem : Html Msg
-newPlaylistItem =
-    ul
-        [ class "menu-list" ]
-        [ li
-            []
-            [ a
-                [ onClick ShowNewPlaylistModal ]
-                [ text "Create New Playlist" ]
+viewRenameForm : RenamePlaylistForm -> Html Msg
+viewRenameForm renamePlaylistForm =
+    form
+        [ onSubmit RenamePlaylist ]
+        [ p
+            [ class "control" ]
+            [ input
+                [ id "rename-playlist-form"
+                , class "input"
+                , placeholder "Rename Playlist"
+                , type' "text"
+                , value renamePlaylistForm.name
+                , autofocus True
+                , onInput RenamePlaylistFormInput
+                , onBlur HideForm
+                ]
+                []
             ]
         ]
+
+
+viewNewPlaylistForm : Model -> List (Html Msg)
+viewNewPlaylistForm { displayForm } =
+    case displayForm of
+        DisplayNewPlaylistForm ->
+            [ li []
+                [ form
+                    [ onSubmit CreateNewPlaylist ]
+                    [ input
+                        [ id "new-playlist-form"
+                        , class "input"
+                        , placeholder "New Playlist Name"
+                        , type' "text"
+                        , autofocus True
+                        , onInput NewPlaylistFormInputName
+                        , onBlur HideForm
+                        ]
+                        []
+                    ]
+                ]
+            ]
+
+        _ ->
+          []
+
+
+playlistOps : Model -> Html Msg
+playlistOps { displayMain } =
+    let
+        operations =
+            case displayMain of
+                DisplayPlaylist playlist ->
+                    [ li
+                        []
+                        [ a
+                            [ onClick ShowDeletePlaylistForm ]
+                            [ text "Delete Playlist" ]
+                        ]
+                    ]
+
+                _ ->
+                    []
+    in
+        ul
+            [ class "menu-list" ]
+            ([ li
+                []
+                [ a
+                    [ onClick ShowNewPlaylistForm ]
+                    [ text "Create New Playlist" ]
+                ]
+             ]
+                ++ operations
+            )
