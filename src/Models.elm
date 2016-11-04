@@ -20,7 +20,7 @@ type DisplayForm
 
 
 type MainDisplay
-    = DisplayPlaylist Playlist
+    = DisplayPlaylist String
     | DisplaySearchResult
     | DisplayNone
 

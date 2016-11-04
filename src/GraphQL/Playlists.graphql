@@ -81,3 +81,20 @@ mutation addTrackToPlaylist($track: TrackInput!, $playlistId: String!) {
     }
   }
 }
+
+mutation removeTrack($trackId: String!) {
+  removeTrack(trackId: $trackId) {
+    ok
+    playlists {
+      id
+      name
+      tracks {
+        id
+        name
+        artists
+        duration
+        youtubeId
+      }
+    }
+  }
+}

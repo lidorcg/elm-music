@@ -5,7 +5,7 @@ import Actions exposing (..)
 import Models exposing (..)
 import Utils exposing (RemoteData(..))
 import Html exposing (..)
-import Html.Attributes exposing (id, class, href, style, placeholder, type', value, autofocus)
+import Html.Attributes exposing (id, class, style, placeholder, type', value)
 import Html.Events exposing (onClick, onSubmit, onInput, onBlur, onMouseEnter, onMouseLeave)
 import List exposing (map)
 
@@ -18,7 +18,7 @@ view state =
     aside
         [ class "menu" ]
         [ a
-            [ class "nav-item is-brand", href "#" ]
+            [ class "nav-item is-brand", onClick ShowSearchResult ]
             [ h1
                 [ class "title is-2 has-text-centered" ]
                 [ text "My Music" ]
@@ -62,8 +62,8 @@ viewPlaylists state =
 isDisplayingPlaylist : MainDisplay -> String
 isDisplayingPlaylist displayMain =
     case displayMain of
-        DisplayPlaylist playlist ->
-            playlist.id
+        DisplayPlaylist playlistId ->
+            playlistId
 
         _ ->
             ""
@@ -135,7 +135,6 @@ viewRenameForm renamePlaylistForm =
                 , placeholder "Rename Playlist"
                 , type' "text"
                 , value renamePlaylistForm.name
-                , autofocus True
                 , onInput RenamePlaylistFormInput
                 , onBlur HideForm
                 ]
@@ -156,7 +155,6 @@ viewNewPlaylistForm { displayForm } =
                         , class "input"
                         , placeholder "New Playlist Name"
                         , type' "text"
-                        , autofocus True
                         , onInput NewPlaylistFormInputName
                         , onBlur HideForm
                         ]

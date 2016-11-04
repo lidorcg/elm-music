@@ -12,10 +12,11 @@ import GraphQL.Playlists
         , renamePlaylist
         , deletePlaylist
         , addTrackToPlaylist
+        , removeTrack
         )
 import Debug exposing (log)
 import Task exposing (perform)
-import List exposing (map, filter, head)
+import List exposing (map)
 import Dom
 
 
@@ -58,6 +59,13 @@ update msg model =
             , Cmd.none
             )
 
+        ShowSearchResult ->
+          ( { model
+              | displayMain = DisplaySearchResult
+            }
+          , Cmd.none
+          )
+
         FetchPlaylistsFail error ->
             ( { model
                 | playlists = Failure (log "error" error)
@@ -76,7 +84,7 @@ update msg model =
 
         ShowPlaylist playlist ->
             ( { model
-                | displayMain = DisplayPlaylist playlist
+                | displayMain = DisplayPlaylist playlist.id
                 , displayForm = DisplayNoForm
                 , renamePlaylistForm = RenamePlaylistForm playlist.id playlist.name
                 , deletePlaylistForm = DeletePlaylistForm playlist.id
@@ -303,15 +311,37 @@ update msg model =
             , Cmd.none
             )
 
+        RemoveTrack trackId ->
+            ( model
+            , removeTrack {trackId = trackId}
+                |> perform RemoveTrackResponseError RemoveTrackResponseOk
+            )
+
+        RemoveTrackResponseError error ->
+            ( { model
+                | playlists = Failure (log "error" error)
+              }
+            , Cmd.none
+            )
+
+        RemoveTrackResponseOk result ->
+            ( { model
+                | playlists =
+                    Success <|
+                        processPlaylists result.removeTrack.playlists
+              }
+            , Cmd.none
+            )
+
 
 processPlaylists : List RemotePlaylist -> List Playlist
 processPlaylists playlists =
-    List.map remotePlaylistToPlaylist playlists
+    map remotePlaylistToPlaylist playlists
 
 
 processSearchResult : SearchResult -> List Track
 processSearchResult result =
-    List.map remoteSearchTrackToTrack result.searchTracks
+    map remoteSearchTrackToTrack result.searchTracks
 
 
 maybeAddTrackToPlaylist : Maybe String -> Maybe Track -> Cmd Msg

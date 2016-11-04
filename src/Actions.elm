@@ -9,6 +9,7 @@ import GraphQL.Playlists
         , RenamePlaylistResult
         , DeletePlaylistResult
         , AddTrackToPlaylistResult
+        , RemoveTrackResult
         )
 import Http exposing (Error)
 import Dom exposing (Error)
@@ -24,6 +25,7 @@ type Msg
     | Search
     | SearchFail Http.Error
     | SearchSucceed SearchResult
+    | ShowSearchResult
       -- Display Playlist
     | FetchPlaylistsFail Http.Error
     | FetchPlaylistsSucceed PlaylistsResult
@@ -56,6 +58,9 @@ type Msg
     | AddTrackToPlaylistResponseError Http.Error
     | AddTrackToPlaylistResponseOk AddTrackToPlaylistResult
       -- Remove Track From Playlist
+    | RemoveTrack String
+    | RemoveTrackResponseError Http.Error
+    | RemoveTrackResponseOk RemoveTrackResult
       -- Edit Track On Playlist
       -- Create New Track
     | DoNothing

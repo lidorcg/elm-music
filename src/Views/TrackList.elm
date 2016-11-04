@@ -4,7 +4,7 @@ import Actions exposing (..)
 import Models exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, href, style)
-import Html.Events exposing (on)
+import Html.Events exposing (on, onClick)
 import String exposing (toInt)
 import Mouse exposing (Position)
 import Json.Decode as Json
@@ -27,6 +27,7 @@ view trackList =
                     , th [] [ text "Artist" ]
                     , th [] [ text "Duration" ]
                     , th [] [ text "ytID" ]
+                    , th [] [ text "Remove" ]
                     ]
                 ]
             , tbody [] trackRows
@@ -48,12 +49,13 @@ trackRow track =
             , td [] [ text track.artists ]
             , td [] [ text duration ]
             , td [ class "is-icon" ] [ youtubeIcon ]
+            , td [ class "is-icon" ] [ removeTrackIcon track.id ]
             ]
 
 
 grabHandle : Html Msg
 grabHandle =
-    span [ class "icon", style [ ( "cursor", "grab" ) ]  ]
+    span [ class "icon", style [ ( "cursor", "grab" ) ] ]
         [ i [ class "fa fa-bars" ] [] ]
 
 
@@ -88,6 +90,17 @@ viewYoutubeLink ytId =
         Just id ->
             a [ href <| "https://www.youtube.com/watch?v=" ++ id ]
                 [ i [ class "fa fa-play-circle" ] [] ]
+
+
+removeTrackIcon : Maybe String -> Html Msg
+removeTrackIcon trackId =
+    case trackId of
+        Nothing ->
+            span [] []
+
+        Just id ->
+            a [ onClick <| RemoveTrack id ]
+                [ i [ class "fa fa-trash-o" ] [] ]
 
 
 dragableTrack : Track -> Html Msg -> Html Msg
