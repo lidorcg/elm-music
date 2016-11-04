@@ -2,7 +2,14 @@ module Models exposing (..)
 
 import List exposing (map, filter, head)
 import Maybe exposing (withDefault)
-import String exposing (toInt)
+import Mouse exposing (Position)
+
+
+type alias Dnd =
+    { track : Maybe Track
+    , playlistId : Maybe String
+    , pos : Maybe Position
+    }
 
 
 type DisplayForm
@@ -135,23 +142,7 @@ processDuration : Maybe String -> String
 processDuration t =
     case t of
         Nothing ->
-            "NULL"
+            "0"
 
         Just time ->
-            let
-                ms =
-                    Result.withDefault 0 (toInt time)
-
-                minutes =
-                    ms // 1000 // 60
-
-                seconds =
-                    ms // 1000 `rem` 60
-
-                zeroPadding =
-                    if seconds < 10 then
-                        "0"
-                    else
-                        ""
-            in
-                toString minutes ++ ":" ++ zeroPadding ++ toString seconds
+            time

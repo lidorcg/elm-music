@@ -6,6 +6,7 @@ import Utils exposing (stylesheet)
 import Html exposing (..)
 import Views.Layout as Layout
 import Views.Modals as Modals
+import Views.Dnd as Dnd
 
 
 -- VIEW
@@ -18,4 +19,5 @@ view state =
         , stylesheet "assets/css/font-awesome.css"
         , Layout.view state
         , Modals.view state
+        , Dnd.view state
         ]

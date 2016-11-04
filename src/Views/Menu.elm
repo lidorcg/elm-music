@@ -6,7 +6,8 @@ import Models exposing (..)
 import Utils exposing (RemoteData(..))
 import Html exposing (..)
 import Html.Attributes exposing (id, class, href, style, placeholder, type', value, autofocus)
-import Html.Events exposing (onClick, onSubmit, onInput, onBlur)
+import Html.Events exposing (onClick, onSubmit, onInput, onBlur, onMouseEnter, onMouseLeave)
+import List exposing (map)
 
 
 -- VIEW
@@ -53,8 +54,9 @@ viewPlaylists state =
             in
                 ul
                     [ class "menu-list" ]
-                    ((List.map (viewPlaylist active state) res)
-                    ++ (viewNewPlaylistForm state))
+                    ((map (viewPlaylist active state) res)
+                        ++ (viewNewPlaylistForm state)
+                    )
 
 
 isDisplayingPlaylist : MainDisplay -> String
@@ -67,21 +69,42 @@ isDisplayingPlaylist displayMain =
             ""
 
 
+(=>) : a -> b -> ( a, b )
+(=>) =
+    (,)
+
+
 viewPlaylist : String -> Model -> Playlist -> Html Msg
 viewPlaylist active state playlist =
-    if active == playlist.id then
-        viewActivePlaylist state playlist
-    else
-        li
-            []
-            [ a
-                [ onClick (ShowPlaylist playlist) ]
-                [ text playlist.name ]
-            ]
+    let
+        dropableStyle =
+            case state.dnd.playlistId of
+                Nothing ->
+                    []
+
+                Just id ->
+                    if id == playlist.id then
+                        [ "background-color" => "#2366d1" ]
+                    else
+                        []
+    in
+        if active == playlist.id then
+            viewActivePlaylist state playlist dropableStyle
+        else
+            li
+                []
+                [ a
+                    [ onClick (ShowPlaylist playlist)
+                    , style dropableStyle
+                    , onMouseEnter (EnterPlaylist playlist.id)
+                    , onMouseLeave LeavePlaylist
+                    ]
+                    [ text playlist.name ]
+                ]
 
 
-viewActivePlaylist : Model -> Playlist -> Html Msg
-viewActivePlaylist { displayForm, renamePlaylistForm } playlist =
+viewActivePlaylist : Model -> Playlist -> List ( String, String ) -> Html Msg
+viewActivePlaylist { displayForm, renamePlaylistForm } playlist dropableStyle =
     case displayForm of
         DisplayRenamePlaylistForm ->
             li [] [ viewRenameForm renamePlaylistForm ]
@@ -90,7 +113,12 @@ viewActivePlaylist { displayForm, renamePlaylistForm } playlist =
             li
                 []
                 [ a
-                    [ class "is-active", onClick ShowRenamePlaylistForm ]
+                    [ class "is-active"
+                    , onClick ShowRenamePlaylistForm
+                    , style dropableStyle
+                    , onMouseEnter (EnterPlaylist playlist.id)
+                    , onMouseLeave LeavePlaylist
+                    ]
                     [ text playlist.name ]
                 ]
 
@@ -138,7 +166,7 @@ viewNewPlaylistForm { displayForm } =
             ]
 
         _ ->
-          []
+            []
 
 
 playlistOps : Model -> Html Msg
@@ -169,3 +197,9 @@ playlistOps { displayMain } =
              ]
                 ++ operations
             )
+
+
+dropablePlaylist : String -> Html Msg -> Html Msg
+dropablePlaylist playlistId view =
+    div [ onMouseEnter (EnterPlaylist playlistId), onMouseLeave LeavePlaylist ]
+        [ view ]

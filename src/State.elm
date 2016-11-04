@@ -2,7 +2,7 @@ module State exposing (..)
 
 import Models exposing (..)
 import Actions exposing (..)
-import Utils exposing (RemoteData(..),WebData)
+import Utils exposing (RemoteData(..), WebData)
 import GraphQL.Playlists exposing (playlists)
 import Task exposing (perform)
 
@@ -19,6 +19,7 @@ type alias Model =
     , newPlaylistForm : NewPlaylistForm
     , renamePlaylistForm : RenamePlaylistForm
     , deletePlaylistForm : DeletePlaylistForm
+    , dnd : Dnd
     }
 
 
@@ -32,6 +33,7 @@ init =
       , newPlaylistForm = NewPlaylistForm ""
       , renamePlaylistForm = RenamePlaylistForm "" ""
       , deletePlaylistForm = DeletePlaylistForm ""
+      , dnd = Dnd Nothing Nothing Nothing
       }
     , playlists
         |> perform FetchPlaylistsFail FetchPlaylistsSucceed
