@@ -1,15 +1,15 @@
 module Actions exposing (..)
 
 import Models exposing (Playlist, Track)
-import GraphQL.Discover exposing (SearchResult)
+import GraphQL.Discover exposing (Search)
 import GraphQL.Playlists
     exposing
-        ( PlaylistsResult
-        , CreatePlaylistResult
-        , RenamePlaylistResult
-        , DeletePlaylistResult
-        , AddTrackToPlaylistResult
-        , RemoveTrackResult
+        ( Playlists
+        , CreatePlaylist
+        , RenamePlaylist
+        , DeletePlaylist
+        , AddTrackToPlaylist
+        , RemoveTrack
         )
 import Http exposing (Error)
 import Dom exposing (Error)
@@ -24,11 +24,11 @@ type Msg
       SearchFormInputQuery String
     | Search
     | SearchFail Http.Error
-    | SearchSucceed SearchResult
+    | SearchSucceed Search
     | ShowSearchResult
       -- Display Playlist
     | FetchPlaylistsFail Http.Error
-    | FetchPlaylistsSucceed PlaylistsResult
+    | FetchPlaylistsSucceed Playlists
     | ShowPlaylist Playlist
       -- Create New Playlist
     | HideForm
@@ -36,19 +36,19 @@ type Msg
     | NewPlaylistFormInputName String
     | CreateNewPlaylist
     | CreateNewPlaylistResponseError Http.Error
-    | CreateNewPlaylistResponseOk CreatePlaylistResult
+    | CreateNewPlaylistResponseOk CreatePlaylist
       -- Rename Playlist
     | ShowRenamePlaylistForm
     | FocusFail Dom.Error
     | RenamePlaylistFormInput String
     | RenamePlaylist
     | RenamePlaylistResponseError Http.Error
-    | RenamePlaylistResponseOk RenamePlaylistResult
+    | RenamePlaylistResponseOk RenamePlaylist
       -- Delete Playlist
     | ShowDeletePlaylistForm
     | DeletePlaylist
     | DeletePlaylistResponseError Http.Error
-    | DeletePlaylistResponseOk DeletePlaylistResult
+    | DeletePlaylistResponseOk DeletePlaylist
       -- Add Track To Playlist
     | DragTrack Track Position
     | DragAt Position
@@ -56,11 +56,11 @@ type Msg
     | EnterPlaylist String
     | LeavePlaylist
     | AddTrackToPlaylistResponseError Http.Error
-    | AddTrackToPlaylistResponseOk AddTrackToPlaylistResult
+    | AddTrackToPlaylistResponseOk AddTrackToPlaylist
       -- Remove Track From Playlist
     | RemoveTrack String
     | RemoveTrackResponseError Http.Error
-    | RemoveTrackResponseOk RemoveTrackResult
+    | RemoveTrackResponseOk RemoveTrack
       -- Edit Track On Playlist
       -- Create New Track
     | DoNothing

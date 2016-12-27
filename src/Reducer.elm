@@ -4,7 +4,7 @@ import State exposing (..)
 import Actions exposing (..)
 import Models exposing (..)
 import Utils exposing (RemoteData(..))
-import GraphQL.Discover exposing (search, SearchResult)
+import GraphQL.Discover exposing (search, Search)
 import GraphQL.Playlists
     exposing
         ( playlists
@@ -339,7 +339,7 @@ processPlaylists playlists =
     map remotePlaylistToPlaylist playlists
 
 
-processSearchResult : SearchResult -> List Track
+processSearchResult : Search -> List Track
 processSearchResult result =
     map remoteSearchTrackToTrack result.searchTracks
 
