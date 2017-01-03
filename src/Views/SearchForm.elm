@@ -1,29 +1,29 @@
 module Views.SearchForm exposing (view)
 
-import Reducers.Search as Search
-import Actions.Main as Actions
+import State exposing (..)
+import Actions exposing (..)
+import Utils exposing (RemoteData(..), WebData)
 import Html exposing (..)
 import Html.Events exposing (onSubmit, onInput)
-import Html.Attributes exposing (class, type', placeholder)
-import Utils.RemoteData exposing (..)
+import Html.Attributes exposing (class, type_, placeholder)
 
 
 -- VIEW
 
 
-view : Search.Model -> Html Actions.Msg
-view searchState =
+view : Model -> Html Msg
+view { searchResult } =
     let
         isLoading =
-            isResultLoading searchState.result
+            isResultLoading searchResult
     in
-        form [ onSubmit Actions.SearchFormSubmit ]
+        form [ onSubmit Search ]
             [ p [ class "nav-item control has-addons" ]
                 [ input
                     [ class "input"
                     , placeholder "Find music"
-                    , type' "text"
-                    , onInput Actions.SearchFormInputQuery
+                    , type_ "text"
+                    , onInput SearchFormInputQuery
                     ]
                     []
                 , button
@@ -33,7 +33,7 @@ view searchState =
             ]
 
 
-isResultLoading : RemoteData a -> String
+isResultLoading : WebData a -> String
 isResultLoading result =
     case result of
         Loading ->

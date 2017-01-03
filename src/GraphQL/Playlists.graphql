@@ -1,8 +1,9 @@
-query allPlaylists {
-  allPlaylists {
+query playlists {
+  playlists {
     id
     name
     tracks {
+      id
       name
       artists
       duration
@@ -11,8 +12,89 @@ query allPlaylists {
   }
 }
 
+
 mutation createPlaylist($name: String!) {
   createPlaylist(name: $name) {
     ok
+    playlists {
+      id
+      name
+      tracks {
+        id
+        name
+        artists
+        duration
+        youtubeId
+      }
+    }
+  }
+}
+
+mutation renamePlaylist($id: String!, $name: String!) {
+  renamePlaylist(playlistId: $id, newName: $name) {
+    ok
+    playlists {
+      id
+      name
+      tracks {
+        id
+        name
+        artists
+        duration
+        youtubeId
+      }
+    }
+  }
+}
+
+mutation deletePlaylist($id: String!) {
+  deletePlaylist(playlistId: $id) {
+    ok
+    playlists {
+      id
+      name
+      tracks {
+        id
+        name
+        artists
+        duration
+        youtubeId
+      }
+    }
+  }
+}
+
+
+mutation addTrackToPlaylist($track: TrackInput!, $playlistId: String!) {
+  addTrack(track: $track, playlistId: $playlistId) {
+    ok
+    playlists {
+      id
+      name
+      tracks {
+        id
+        name
+        artists
+        duration
+        youtubeId
+      }
+    }
+  }
+}
+
+mutation removeTrack($trackId: String!) {
+  removeTrack(trackId: $trackId) {
+    ok
+    playlists {
+      id
+      name
+      tracks {
+        id
+        name
+        artists
+        duration
+        youtubeId
+      }
+    }
   }
 }

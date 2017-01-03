@@ -1,15 +1,17 @@
 module App exposing (..)
 
-import Html.App as App
-import Views.Main as View
-import Reducers.Main as State
+import Html as App
+import State
+import View
+import Actions
+import Reducer
+import Subscriptions exposing (subscriptions)
 
-
-main : Program Never
+main : Program Never State.Model Actions.Msg
 main =
     App.program
         { init = State.init
         , view = View.view
-        , update = State.update
-        , subscriptions = (always Sub.none)
+        , update = Reducer.update
+        , subscriptions = subscriptions
         }

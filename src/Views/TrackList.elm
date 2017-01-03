@@ -1,97 +1,86 @@
 module Views.TrackList exposing (view)
 
-import Actions.Main as Actions
+import Actions exposing (..)
+import Models exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (class, href)
-import List exposing (map)
-import Maybe exposing (withDefault)
+import Html.Attributes exposing (class, href, style, target)
+import Html.Events exposing (on, onClick)
 import String exposing (toInt)
-
-
--- MODEL
-
-
-type alias Track =
-    { name : Maybe String
-    , artists : Maybe String
-    , duration : Maybe String
-    , youtubeId : Maybe String
-    }
-
+import Mouse exposing (Position)
+import Json.Decode as Json
 
 
 -- VIEW
 
 
-view : List Track -> Html Actions.Msg
+view : List Track -> Html Msg
 view trackList =
     let
         trackRows =
-            map trackRow trackList
+            List.map trackRow trackList
     in
         table [ class "table" ]
             [ thead []
                 [ tr []
-                    [ th [] [ text "Name" ]
+                    [ th [] [ text "Drag" ]
+                    , th [] [ text "Name" ]
                     , th [] [ text "Artist" ]
                     , th [] [ text "Duration" ]
                     , th [] [ text "ytID" ]
+                    , th [] [ text "Remove" ]
                     ]
                 ]
             , tbody [] trackRows
             ]
 
 
-trackRow : Track -> Html Actions.Msg
+trackRow : Track -> Html Msg
 trackRow track =
     let
-        name =
-            track.name |> withDefault "Unknown Name"
-
-        artist =
-            track.artists |> withDefault "Unknown Artist"
-
         duration =
-            track.duration |> viewDuration
+            track.duration |> viewTrackDuration
 
-        youtubeId =
+        youtubeIcon =
             track.youtubeId |> viewYoutubeLink
     in
         tr []
-            [ td [] [ text name ]
-            , td [] [ text artist ]
+            [ td [] [ dragableTrack track grabHandle ]
+            , td [] [ text track.name ]
+            , td [] [ text track.artists ]
             , td [] [ text duration ]
-            , td [ class "is-icon" ] [ youtubeId ]
+            , td [ class "is-icon" ] [ youtubeIcon ]
+            , td [ class "is-icon" ] [ removeTrackIcon track.id ]
             ]
 
 
-viewDuration : Maybe String -> String
-viewDuration t =
-    case t of
-        Nothing ->
-            "Unknown Duration"
-
-        Just time ->
-            let
-                ms =
-                    Result.withDefault 0 (toInt time)
-
-                minutes =
-                    ms // 1000 // 60
-
-                seconds =
-                    ms // 1000 `rem` 60
-
-                zeroPadding =
-                    if seconds < 10 then
-                        "0"
-                    else
-                        ""
-            in
-                toString minutes ++ ":" ++ zeroPadding ++ toString seconds
+grabHandle : Html Msg
+grabHandle =
+    span [ class "icon", style [ ( "cursor", "grab" ) ] ]
+        [ i [ class "fa fa-bars" ] [] ]
 
 
-viewYoutubeLink : Maybe String -> Html Actions.Msg
+viewTrackDuration : String -> String
+viewTrackDuration time =
+    let
+        ms =
+            Result.withDefault 0 (toInt time)
+
+        minutes =
+            ms // 1000 // 60
+
+        seconds =
+            ms // rem 1000 60
+
+        zeroPadding =
+            if seconds < 10 then
+                "0"
+            else
+                ""
+    in
+        toString minutes ++ ":" ++ zeroPadding ++ toString seconds
+
+
+viewYoutubeLink : Maybe String -> Html Msg
 viewYoutubeLink ytId =
     case ytId of
         Nothing ->
@@ -99,5 +88,32 @@ viewYoutubeLink ytId =
                 [ i [ class "fa fa-minus-circle" ] [] ]
 
         Just id ->
-            a [ href <| "https://www.youtube.com/watch?v=" ++ id ]
+            a [ href <| "https://www.youtube.com/watch?v=" ++ id, target "_blank" ]
                 [ i [ class "fa fa-play-circle" ] [] ]
+
+
+removeTrackIcon : Maybe String -> Html Msg
+removeTrackIcon trackId =
+    case trackId of
+        Nothing ->
+            span [] []
+
+        Just id ->
+            a [ onClick <| RemoveTrack id ]
+                [ i [ class "fa fa-trash-o" ] [] ]
+
+
+dragableTrack : Track -> Html Msg -> Html Msg
+dragableTrack track view =
+    span [ onMouseDown track ]
+        [ view ]
+
+
+onMouseDown : Track -> Attribute Msg
+onMouseDown track =
+    on "mousedown" (Json.map (dragTrack track) Mouse.position)
+
+
+dragTrack : Track -> Position -> Msg
+dragTrack track pos =
+    DragTrack track pos
