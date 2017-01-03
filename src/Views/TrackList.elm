@@ -3,7 +3,7 @@ module Views.TrackList exposing (view)
 import Actions exposing (..)
 import Models exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (class, href, style)
+import Html.Attributes exposing (class, href, style, target)
 import Html.Events exposing (on, onClick)
 import String exposing (toInt)
 import Mouse exposing (Position)
@@ -88,7 +88,7 @@ viewYoutubeLink ytId =
                 [ i [ class "fa fa-minus-circle" ] [] ]
 
         Just id ->
-            a [ href <| "https://www.youtube.com/watch?v=" ++ id ]
+            a [ href <| "https://www.youtube.com/watch?v=" ++ id, target "_blank" ]
                 [ i [ class "fa fa-play-circle" ] [] ]
 
 
