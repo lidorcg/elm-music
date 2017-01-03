@@ -4,7 +4,7 @@ import State exposing (Model)
 import Actions exposing (..)
 import Models exposing (..)
 import Utils exposing (..)
-import GraphQL.Playlists as GraphQL
+import GraphQL.Playlists exposing (Playlists)
 import Debug exposing (log)
 import List exposing (map)
 
@@ -43,6 +43,6 @@ update msg model =
             ( model, Cmd.none )
 
 
-processPlaylists : GraphQL.Playlists -> List Playlist
+processPlaylists : Playlists -> List Playlist
 processPlaylists result =
     map remotePlaylistToPlaylist result.playlists

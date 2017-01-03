@@ -1,10 +1,10 @@
-module Updates.CreatePlaylist exposing (update)
+module Updates.RenamePlaylist exposing (update)
 
 import State exposing (Model)
 import Actions exposing (..)
 import Models exposing (..)
 import Utils exposing (..)
-import GraphQL.Playlists exposing(createPlaylist, CreatePlaylist)
+import GraphQL.Playlists exposing(renamePlaylist, RenamePlaylist)
 import Dom exposing (focus)
 import Task exposing (attempt)
 import Debug exposing (log)
@@ -16,26 +16,27 @@ import List exposing (map)
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        ShowNewPlaylistForm ->
-            ( { model | displayForm = DisplayNewPlaylistForm }
+        ShowRenamePlaylistForm ->
+            ( { model | displayForm = DisplayRenamePlaylistForm }
             , focus "new-playlist-form" |> attempt FocusFail
             )
 
-        NewPlaylistFormInputName name ->
-            ( { model | newPlaylistForm = NewPlaylistForm name }
-            , Cmd.none
+        RenamePlaylistFormInput name ->
+            let
+                renamePlaylistForm =
+                    RenamePlaylistForm model.renamePlaylistForm.id name
+            in
+                ( { model | renamePlaylistForm = renamePlaylistForm }
+                , Cmd.none
+                )
+
+        RenamePlaylist ->
+            ( { model | displayForm = DisplayNoForm }
+            , renamePlaylist model.renamePlaylistForm
+                |> attempt RenamePlaylistResponse
             )
 
-        CreateNewPlaylist ->
-            ( { model
-                | displayForm = DisplayNoForm
-                , newPlaylistForm = NewPlaylistForm ""
-              }
-            , createPlaylist model.newPlaylistForm
-                |> attempt CreateNewPlaylistResponse
-            )
-
-        CreateNewPlaylistResponse result ->
+        RenamePlaylistResponse result ->
             let
                 playlists =
                     case result of
@@ -52,6 +53,6 @@ update msg model =
         _ ->
             ( model, Cmd.none )
 
-processPlaylists : CreatePlaylist -> List Playlist
+processPlaylists : RenamePlaylist -> List Playlist
 processPlaylists result =
-    map remotePlaylistToPlaylist result.createPlaylist.playlists
+    map remotePlaylistToPlaylist result.renamePlaylist.playlists
