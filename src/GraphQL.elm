@@ -1,10 +1,4 @@
-module GraphQL
-    exposing
-        ( query
-        , mutation
-        , apply
-        , maybeEncode
-        )
+module GraphQL exposing (query , mutation , apply , maybeEncode)
 
 {-| This library provides support functions used by
     [elm-graphql](https://github.com/jahewson/elm-graphql), the GraphQL code generator for Elm.
