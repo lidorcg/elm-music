@@ -10,6 +10,7 @@ import Json.Decode exposing (..)
 import Json.Encode exposing (encode)
 import Http
 import GraphQL exposing (apply, maybeEncode)
+import Utils exposing ((:=))
 
 
 endpointUrl : String
@@ -51,10 +52,6 @@ searchDecoder =
     map Search
         ("searchTracks"
             := (list
-                    (map (\name artists duration youtubeId -> { name = name, artists = artists, duration = duration, youtubeId = youtubeId }) (maybe ("name" := string))
-                        `apply` (maybe ("artists" := string))
-                        `apply` (maybe ("duration" := string))
-                        `apply` (maybe ("youtubeId" := string))
-                    )
+                    (apply (apply (apply (map (\name artists duration youtubeId -> { name = name, artists = artists, duration = duration, youtubeId = youtubeId }) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
                )
         )

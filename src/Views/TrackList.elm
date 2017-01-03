@@ -69,7 +69,7 @@ viewTrackDuration time =
             ms // 1000 // 60
 
         seconds =
-            ms // 1000 `rem` 60
+            ms // rem 1000 60
 
         zeroPadding =
             if seconds < 10 then

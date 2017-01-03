@@ -5,7 +5,7 @@ import Actions exposing (..)
 import Models exposing (..)
 import Utils exposing (RemoteData(..))
 import Html exposing (..)
-import Html.Attributes exposing (id, class, style, placeholder, type', value)
+import Html.Attributes exposing (id, class, style, placeholder, type_, value)
 import Html.Events exposing (onClick, onSubmit, onInput, onBlur, onMouseEnter, onMouseLeave)
 import List exposing (map)
 
@@ -133,7 +133,7 @@ viewRenameForm renamePlaylistForm =
                 [ id "rename-playlist-form"
                 , class "input"
                 , placeholder "Rename Playlist"
-                , type' "text"
+                , type_ "text"
                 , value renamePlaylistForm.name
                 , onInput RenamePlaylistFormInput
                 , onBlur HideForm
@@ -154,7 +154,7 @@ viewNewPlaylistForm { displayForm } =
                         [ id "new-playlist-form"
                         , class "input"
                         , placeholder "New Playlist Name"
-                        , type' "text"
+                        , type_ "text"
                         , onInput NewPlaylistFormInputName
                         , onBlur HideForm
                         ]

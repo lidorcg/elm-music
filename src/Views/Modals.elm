@@ -4,7 +4,7 @@ import State exposing (..)
 import Actions exposing (..)
 import Models exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (class, placeholder, type', style, value)
+import Html.Attributes exposing (class, placeholder, type_, style, value)
 import Html.Events exposing (onSubmit, onInput, onClick)
 
 

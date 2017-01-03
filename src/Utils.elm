@@ -3,6 +3,8 @@ module Utils exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Http
+import Json.Decode exposing (field, Decoder)
+
 
 script : String -> Html msg
 script url =
@@ -30,3 +32,8 @@ type RemoteData e a
 
 type alias WebData a =
     RemoteData Http.Error a
+
+
+(:=) : String -> Decoder a -> Decoder a
+(:=) name decoder =
+    field name decoder

@@ -4,7 +4,7 @@ import Models exposing (..)
 import Actions exposing (..)
 import Utils exposing (RemoteData(..), WebData)
 import GraphQL.Playlists exposing (playlists)
-import Task exposing (perform)
+import Task exposing (attempt)
 
 
 -- MODEL
@@ -35,6 +35,5 @@ init =
       , deletePlaylistForm = DeletePlaylistForm ""
       , dnd = Dnd Nothing Nothing Nothing
       }
-    , playlists
-        |> perform FetchPlaylistsFail FetchPlaylistsSucceed
+    , attempt PlaylistResponse playlists
     )

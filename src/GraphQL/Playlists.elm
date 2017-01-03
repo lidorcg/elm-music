@@ -10,6 +10,7 @@ import Json.Decode exposing (..)
 import Json.Encode exposing (encode)
 import Http
 import GraphQL exposing (apply, maybeEncode)
+import Utils exposing ((:=))
 
 
 endpointUrl : String
@@ -53,19 +54,12 @@ playlistsDecoder =
     map Playlists
         ("playlists"
             := (list
-                    (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)
-                        `apply` (maybe ("name" := string))
-                        `apply`
-                            ("tracks"
-                                := (list
-                                        (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)
-                                            `apply` (maybe ("name" := string))
-                                            `apply` (maybe ("artists" := string))
-                                            `apply` (maybe ("duration" := string))
-                                            `apply` (maybe ("youtubeId" := string))
-                                        )
-                                   )
-                            )
+                    (apply (apply (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)) (maybe ("name" := string)))
+                        ("tracks"
+                            := (list
+                                    (apply (apply (apply (apply (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
+                               )
+                        )
                     )
                )
         )
@@ -113,26 +107,18 @@ createPlaylistDecoder : Decoder CreatePlaylist
 createPlaylistDecoder =
     map CreatePlaylist
         ("createPlaylist"
-            := (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool))
-                    `apply`
-                        ("playlists"
-                            := (list
-                                    (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)
-                                        `apply` (maybe ("name" := string))
-                                        `apply`
-                                            ("tracks"
-                                                := (list
-                                                        (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)
-                                                            `apply` (maybe ("name" := string))
-                                                            `apply` (maybe ("artists" := string))
-                                                            `apply` (maybe ("duration" := string))
-                                                            `apply` (maybe ("youtubeId" := string))
-                                                        )
-                                                   )
-                                            )
+            := (apply (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool)))
+                    ("playlists"
+                        := (list
+                                (apply (apply (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)) (maybe ("name" := string)))
+                                    ("tracks"
+                                        := (list
+                                                (apply (apply (apply (apply (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
+                                           )
                                     )
-                               )
-                        )
+                                )
+                           )
+                    )
                )
         )
 
@@ -181,26 +167,18 @@ renamePlaylistDecoder : Decoder RenamePlaylist
 renamePlaylistDecoder =
     map RenamePlaylist
         ("renamePlaylist"
-            := (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool))
-                    `apply`
-                        ("playlists"
-                            := (list
-                                    (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)
-                                        `apply` (maybe ("name" := string))
-                                        `apply`
-                                            ("tracks"
-                                                := (list
-                                                        (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)
-                                                            `apply` (maybe ("name" := string))
-                                                            `apply` (maybe ("artists" := string))
-                                                            `apply` (maybe ("duration" := string))
-                                                            `apply` (maybe ("youtubeId" := string))
-                                                        )
-                                                   )
-                                            )
+            := (apply (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool)))
+                    ("playlists"
+                        := (list
+                                (apply (apply (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)) (maybe ("name" := string)))
+                                    ("tracks"
+                                        := (list
+                                                (apply (apply (apply (apply (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
+                                           )
                                     )
-                               )
-                        )
+                                )
+                           )
+                    )
                )
         )
 
@@ -247,26 +225,18 @@ deletePlaylistDecoder : Decoder DeletePlaylist
 deletePlaylistDecoder =
     map DeletePlaylist
         ("deletePlaylist"
-            := (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool))
-                    `apply`
-                        ("playlists"
-                            := (list
-                                    (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)
-                                        `apply` (maybe ("name" := string))
-                                        `apply`
-                                            ("tracks"
-                                                := (list
-                                                        (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)
-                                                            `apply` (maybe ("name" := string))
-                                                            `apply` (maybe ("artists" := string))
-                                                            `apply` (maybe ("duration" := string))
-                                                            `apply` (maybe ("youtubeId" := string))
-                                                        )
-                                                   )
-                                            )
+            := (apply (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool)))
+                    ("playlists"
+                        := (list
+                                (apply (apply (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)) (maybe ("name" := string)))
+                                    ("tracks"
+                                        := (list
+                                                (apply (apply (apply (apply (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
+                                           )
                                     )
-                               )
-                        )
+                                )
+                           )
+                    )
                )
         )
 
@@ -320,26 +290,18 @@ addTrackToPlaylistDecoder : Decoder AddTrackToPlaylist
 addTrackToPlaylistDecoder =
     map AddTrackToPlaylist
         ("addTrack"
-            := (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool))
-                    `apply`
-                        ("playlists"
-                            := (list
-                                    (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)
-                                        `apply` (maybe ("name" := string))
-                                        `apply`
-                                            ("tracks"
-                                                := (list
-                                                        (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)
-                                                            `apply` (maybe ("name" := string))
-                                                            `apply` (maybe ("artists" := string))
-                                                            `apply` (maybe ("duration" := string))
-                                                            `apply` (maybe ("youtubeId" := string))
-                                                        )
-                                                   )
-                                            )
+            := (apply (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool)))
+                    ("playlists"
+                        := (list
+                                (apply (apply (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)) (maybe ("name" := string)))
+                                    ("tracks"
+                                        := (list
+                                                (apply (apply (apply (apply (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
+                                           )
                                     )
-                               )
-                        )
+                                )
+                           )
+                    )
                )
         )
 
@@ -386,25 +348,17 @@ removeTrackDecoder : Decoder RemoveTrack
 removeTrackDecoder =
     map RemoveTrack
         ("removeTrack"
-            := (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool))
-                    `apply`
-                        ("playlists"
-                            := (list
-                                    (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)
-                                        `apply` (maybe ("name" := string))
-                                        `apply`
-                                            ("tracks"
-                                                := (list
-                                                        (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)
-                                                            `apply` (maybe ("name" := string))
-                                                            `apply` (maybe ("artists" := string))
-                                                            `apply` (maybe ("duration" := string))
-                                                            `apply` (maybe ("youtubeId" := string))
-                                                        )
-                                                   )
-                                            )
+            := (apply (map (\ok playlists -> { ok = ok, playlists = playlists }) (maybe ("ok" := bool)))
+                    ("playlists"
+                        := (list
+                                (apply (apply (map (\id name tracks -> { id = id, name = name, tracks = tracks }) ("id" := string)) (maybe ("name" := string)))
+                                    ("tracks"
+                                        := (list
+                                                (apply (apply (apply (apply (map (\id name artists duration youtubeId -> { id = id, name = name, artists = artists, duration = duration, youtubeId = youtubeId }) ("id" := string)) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
+                                           )
                                     )
-                               )
-                        )
+                                )
+                           )
+                    )
                )
         )

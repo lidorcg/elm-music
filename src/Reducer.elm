@@ -5,15 +5,7 @@ import Actions exposing (..)
 import Models exposing (..)
 import Utils exposing (RemoteData(..))
 import GraphQL.Discover exposing (search, Search)
-import GraphQL.Playlists
-    exposing
-        ( playlists
-        , createPlaylist
-        , renamePlaylist
-        , deletePlaylist
-        , addTrackToPlaylist
-        , removeTrack
-        )
+import GraphQL.Playlists exposing (playlists, createPlaylist, renamePlaylist, deletePlaylist, addTrackToPlaylist, removeTrack)
 import Debug exposing (log)
 import Task exposing (perform)
 import List exposing (map)
@@ -60,11 +52,11 @@ update msg model =
             )
 
         ShowSearchResult ->
-          ( { model
-              | displayMain = DisplaySearchResult
-            }
-          , Cmd.none
-          )
+            ( { model
+                | displayMain = DisplaySearchResult
+              }
+            , Cmd.none
+            )
 
         FetchPlaylistsFail error ->
             ( { model
@@ -313,7 +305,7 @@ update msg model =
 
         RemoveTrack trackId ->
             ( model
-            , removeTrack {trackId = trackId}
+            , removeTrack { trackId = trackId }
                 |> perform RemoveTrackResponseError RemoveTrackResponseOk
             )
 

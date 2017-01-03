@@ -2,16 +2,10 @@ module Updates.Search exposing (update)
 
 import State exposing (Model)
 import Actions exposing (..)
-import Models
-    exposing
-        ( SearchForm
-        , MainDisplay(DisplaySearchResult)
-        , remoteSearchTrackToTrack
-        , Track
-        )
-import Utils exposing (RemoteData(..))
+import Models exposing (..)
+import Utils exposing (..)
 import GraphQL.Discover exposing (search, Search)
-import Task exposing (perform)
+import Task exposing (attempt)
 import Debug exposing (log)
 import List exposing (map)
 
@@ -35,25 +29,25 @@ update msg model =
                 , displayMain = DisplaySearchResult
               }
             , search model.searchForm
-                |> perform SearchFail SearchSucceed
+                |> attempt SearchResponse
             )
 
-        SearchFail error ->
-            ( { model
-                | searchResult = Failure (log "error" error)
-              }
-            , Cmd.none
-            )
+        SearchResponse result ->
+            let
+                searchResult =
+                    case result of
+                        Ok res ->
+                            Success (processSearchResult res)
 
-        SearchSucceed result ->
-            ( { model
-                | searchResult =
-                    Success <|
-                        processSearchResult result
-                , displayMain = DisplaySearchResult
-              }
-            , Cmd.none
-            )
+                        Err err ->
+                            Failure (log "error" err)
+            in
+                ( { model
+                    | searchResult = searchResult
+                    , displayMain = DisplaySearchResult
+                  }
+                , Cmd.none
+                )
 
         ShowSearchResult ->
             ( { model

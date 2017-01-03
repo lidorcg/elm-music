@@ -2,17 +2,9 @@ module Updates.DisplayPlaylist exposing (update)
 
 import State exposing (Model)
 import Actions exposing (..)
-import Models
-    exposing
-        ( MainDisplay(DisplayPlaylist)
-        , DisplayForm(DisplayNoForm)
-        , RenamePlaylistForm
-        , DeletePlaylistForm
-        , remotePlaylistToPlaylist
-        , RemotePlaylist
-        , Playlist
-        )
-import Utils exposing (RemoteData(..))
+import Models exposing (..)
+import Utils exposing (..)
+import GraphQL.Playlists as GraphQL
 import Debug exposing (log)
 import List exposing (map)
 
@@ -23,21 +15,19 @@ import List exposing (map)
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        FetchPlaylistsFail error ->
-            ( { model
-                | playlists = Failure (log "error" error)
-              }
-            , Cmd.none
-            )
+        PlaylistResponse result ->
+            let
+                playlists =
+                    case result of
+                        Ok res ->
+                            Success (processPlaylists res)
 
-        FetchPlaylistsSucceed result ->
-            ( { model
-                | playlists =
-                    Success <|
-                        processPlaylists result.playlists
-              }
-            , Cmd.none
-            )
+                        Err err ->
+                            Failure (log "error" err)
+            in
+                ( { model | playlists = playlists }
+                , Cmd.none
+                )
 
         ShowPlaylist playlist ->
             ( { model
@@ -53,6 +43,6 @@ update msg model =
             ( model, Cmd.none )
 
 
-processPlaylists : List RemotePlaylist -> List Playlist
-processPlaylists playlists =
-    map remotePlaylistToPlaylist playlists
+processPlaylists : GraphQL.Playlists -> List Playlist
+processPlaylists result =
+    map remotePlaylistToPlaylist result.playlists

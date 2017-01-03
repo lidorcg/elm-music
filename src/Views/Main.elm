@@ -3,7 +3,7 @@ module Views.Main exposing (view)
 import State exposing (..)
 import Actions exposing (..)
 import Models exposing (..)
-import Utils exposing (RemoteData(..),WebData)
+import Utils exposing (RemoteData(..), WebData)
 import Html exposing (..)
 import List exposing (filter, head)
 import Views.TrackList as TrackList
@@ -13,7 +13,7 @@ import Views.TrackList as TrackList
 
 
 view : Model -> Html Msg
-view {displayMain, playlists, searchResult} =
+view { displayMain, playlists, searchResult } =
     case displayMain of
         DisplayPlaylist playlistId ->
             displayPlayist playlistId playlists
@@ -27,7 +27,7 @@ view {displayMain, playlists, searchResult} =
 
 displayPlayist : String -> WebData (List Playlist) -> Html Msg
 displayPlayist playlistId playlists =
-  case playlists of
+    case playlists of
         NotAsked ->
             p [] [ text "We haven't asked for this playlist yet" ]
 

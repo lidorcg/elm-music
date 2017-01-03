@@ -5,6 +5,7 @@ import Actions exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class, style)
 
+
 -- VIEW
 
 
@@ -24,8 +25,8 @@ view model =
                 [ class "icon is-large"
                 , style
                     [ "position" => "absolute"
-                    , "left" => px (pos.x-28)
-                    , "top" => px (pos.y-28)
+                    , "left" => px (pos.x - 28)
+                    , "top" => px (pos.y - 28)
                     , "cursor" => "move"
                     , "pointer-events" => "none"
                     ]
