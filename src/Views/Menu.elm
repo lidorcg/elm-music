@@ -54,7 +54,7 @@ viewPlaylists state =
             in
                 ul
                     [ class "menu-list" ]
-                    ((map (viewPlaylist active state) res)
+                    ((List.map (viewPlaylist active state) res)
                         ++ (viewNewPlaylistForm state)
                     )
 

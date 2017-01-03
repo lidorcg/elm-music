@@ -46,7 +46,7 @@ type Msg
     | RemoveTrackResponse (Result Http.Error RemoveTrack)
       -- Edit Track On Playlist
       -- Create New Track
-      -- General
+      -- Commons
     | FocusFail (Result Dom.Error ())
     | HideForm
     | DoNothing

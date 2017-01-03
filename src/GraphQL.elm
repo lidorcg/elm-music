@@ -40,7 +40,7 @@ fetch verb url query operation variables decoder =
                     buildRequestWithBody verb url query operation variables
             )
     in
-        Http.toTask <| request decoder
+        Http.toTask <| request (queryResult decoder)
 
 
 buildRequestWithQuery : String -> String -> String -> String -> Json.Encode.Value -> Decoder a -> Http.Request a
