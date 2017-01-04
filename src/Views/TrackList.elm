@@ -65,11 +65,13 @@ viewTrackDuration time =
         ms =
             Result.withDefault 0 (toInt time)
 
+        s = ms // 1000
+
         minutes =
-            ms // 1000 // 60
+            s // 60
 
         seconds =
-            ms // rem 1000 60
+            rem s 60
 
         zeroPadding =
             if seconds < 10 then
