@@ -6,6 +6,7 @@ import GraphQL.Playlists exposing (Playlists, CreatePlaylist, RenamePlaylist, De
 import Http exposing (Error)
 import Dom exposing (Error)
 import Mouse exposing (Position)
+import Table
 
 
 -- ACTIONS
@@ -46,6 +47,8 @@ type Msg
     | RemoveTrackResponse (Result Http.Error RemoveTrack)
       -- Edit Track On Playlist
       -- Create New Track
+      -- Search and sort music
+    | SetTableState Table.State
       -- Commons
     | FocusFail (Result Dom.Error ())
     | HideForm

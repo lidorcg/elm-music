@@ -5,6 +5,7 @@ import Actions exposing (..)
 import Utils exposing (RemoteData(..), WebData)
 import GraphQL.Playlists exposing (playlists)
 import Task exposing (attempt)
+import Table
 
 
 -- MODEL
@@ -20,6 +21,7 @@ type alias Model =
     , renamePlaylistForm : RenamePlaylistForm
     , deletePlaylistForm : DeletePlaylistForm
     , dnd : Dnd
+    , tableState : Table.State
     }
 
 
@@ -34,6 +36,7 @@ init =
       , renamePlaylistForm = RenamePlaylistForm "" ""
       , deletePlaylistForm = DeletePlaylistForm ""
       , dnd = Dnd Nothing Nothing Nothing
+      , tableState = Table.initialSort "Artists"
       }
     , attempt PlaylistResponse playlists
     )
