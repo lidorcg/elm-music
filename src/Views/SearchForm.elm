@@ -21,9 +21,16 @@ view { searchResult } =
             [ p [ class "nav-item control has-addons" ]
                 [ input
                     [ class "input"
-                    , placeholder "Find music"
+                    , placeholder "Artist"
                     , type_ "text"
-                    , onInput SearchFormInputQuery
+                    , onInput SearchFormInputArtist
+                    ]
+                    []
+                , input
+                    [ class "input"
+                    , placeholder "Track"
+                    , type_ "text"
+                    , onInput SearchFormInputTrack
                     ]
                     []
                 , button

@@ -29,28 +29,74 @@ type alias Search =
     }
 
 
-search :
-    { query : String
-    }
-    -> Task Http.Error Search
+search : { artist : String, track : String } -> Task Http.Error Search
 search params =
+    case params.track of
+        "" ->
+            searchTrackByArtist params.artist
+
+        _ ->
+            searchTrackByName params
+
+
+searchTrackByName : { artist : String, track : String } -> Task Http.Error Search
+searchTrackByName params =
     let
         graphQLQuery =
-            """query search($query: String!) { searchTracks(query: $query) { name artists duration youtubeId } }"""
+            """query searchTracksByName($artist: String!, $track: String!) {
+                searchTracksByNameLastfm(artistName: $artist, trackName: $track) {
+                  name
+                  artists
+                  duration
+                  youtubeId
+                }
+              }"""
     in
         let
             graphQLParams =
                 Json.Encode.object
-                    [ ( "query", Json.Encode.string params.query )
+                    [ ( "artist", Json.Encode.string params.artist )
+                    , ( "track", Json.Encode.string params.track )
                     ]
         in
-            GraphQL.query "GET" endpointUrl graphQLQuery "search" graphQLParams searchDecoder
+            GraphQL.query "GET" endpointUrl graphQLQuery "searchTracksByName" graphQLParams searchTrackByNameDecoder
 
 
-searchDecoder : Decoder Search
-searchDecoder =
+searchTrackByArtist : String -> Task Http.Error Search
+searchTrackByArtist artist =
+    let
+        graphQLQuery =
+            """query searchTracksByArtist($artist: String!) {
+                searchTracksByArtistNameLastfm(artistName: $artist) {
+                  name
+                  artists
+                  duration
+                  youtubeId
+                }
+              }"""
+    in
+        let
+            graphQLParams =
+                Json.Encode.object
+                    [ ( "artist", Json.Encode.string artist )
+                    ]
+        in
+            GraphQL.query "GET" endpointUrl graphQLQuery "searchTracksByArtist" graphQLParams searchTrackByArtistDecoder
+
+
+searchTrackByNameDecoder : Decoder Search
+searchTrackByNameDecoder =
     map Search
-        ("searchTracks"
+        ("searchTracksByNameLastfm"
+            := (list
+                    (apply (apply (apply (map (\name artists duration youtubeId -> { name = name, artists = artists, duration = duration, youtubeId = youtubeId }) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
+               )
+        )
+
+searchTrackByArtistDecoder : Decoder Search
+searchTrackByArtistDecoder =
+    map Search
+        ("searchTracksByArtistNameLastfm"
             := (list
                     (apply (apply (apply (map (\name artists duration youtubeId -> { name = name, artists = artists, duration = duration, youtubeId = youtubeId }) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
                )

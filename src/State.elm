@@ -27,7 +27,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { searchForm = SearchForm ""
+    ( { searchForm = SearchForm "" ""
       , searchResult = NotAsked
       , playlists = Loading
       , displayMain = DisplayNone

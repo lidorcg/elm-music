@@ -14,7 +14,8 @@ import Table
 
 type Msg
     = -- Search
-      SearchFormInputQuery String
+      SearchFormInputArtist String
+    | SearchFormInputTrack String
     | Search
     | SearchResponse (Result Http.Error Search)
     | ShowSearchResult

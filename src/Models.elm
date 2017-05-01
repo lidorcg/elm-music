@@ -26,7 +26,8 @@ type MainDisplay
 
 
 type alias SearchForm =
-    { query : String
+    { artist : String
+    , track : String
     }
 
 

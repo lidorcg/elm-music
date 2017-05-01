@@ -16,12 +16,25 @@ import List exposing (map)
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SearchFormInputQuery string ->
+        SearchFormInputArtist string ->
+          let updatedSearchForm =
+              SearchForm string model.searchForm.track
+          in
             ( { model
-                | searchForm = SearchForm string
+                | searchForm = updatedSearchForm
               }
             , Cmd.none
             )
+
+        SearchFormInputTrack string ->
+            let updatedSearchForm =
+                SearchForm model.searchForm.artist string
+            in
+              ( { model
+                  | searchForm = updatedSearchForm
+                }
+              , Cmd.none
+              )
 
         Search ->
             ( { model
