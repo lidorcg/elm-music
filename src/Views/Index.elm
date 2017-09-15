@@ -15,8 +15,9 @@ import Views.Dnd as Dnd
 view : Model -> Html Msg
 view state =
     div []
-        [ stylesheet "assets/css/bulma.css"
-        , stylesheet "assets/css/font-awesome.css"
+        [ stylesheet "assets/css/font-awesome.css"
+        , stylesheet "assets/css/bulma.css"
+        , stylesheet "assets/css/main.css"
         , Layout.view state
         , Modals.view state
         , Dnd.view state

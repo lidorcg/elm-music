@@ -4,7 +4,7 @@ import State exposing (Model)
 import Actions exposing (..)
 import Models exposing (..)
 import Utils exposing (..)
-import GraphQL.Discover exposing (search, Search)
+import GraphQL.Discover exposing (searchMusic, SearchMusic)
 import Task exposing (attempt)
 import Debug exposing (log)
 import List exposing (map)
@@ -16,19 +16,32 @@ import List exposing (map)
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SearchFormInputQuery string ->
+        SearchFormInputArtist string ->
+          let updatedSearchForm =
+              SearchForm string model.searchForm.track
+          in
             ( { model
-                | searchForm = SearchForm string
+                | searchForm = updatedSearchForm
               }
             , Cmd.none
             )
+
+        SearchFormInputTrack string ->
+            let updatedSearchForm =
+                SearchForm model.searchForm.artist string
+            in
+              ( { model
+                  | searchForm = updatedSearchForm
+                }
+              , Cmd.none
+              )
 
         Search ->
             ( { model
                 | searchResult = Loading
                 , displayMain = DisplaySearchResult
               }
-            , search model.searchForm
+            , searchMusic model.searchForm
                 |> attempt SearchResponse
             )
 
@@ -60,6 +73,6 @@ update msg model =
             ( model, Cmd.none )
 
 
-processSearchResult : Search -> List Track
+processSearchResult : SearchMusic -> List Track
 processSearchResult result =
     map remoteSearchTrackToTrack result.searchTracks

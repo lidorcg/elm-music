@@ -18,17 +18,33 @@ view { searchResult } =
             isResultLoading searchResult
     in
         form [ onSubmit Search ]
-            [ p [ class "nav-item control has-addons" ]
-                [ input
-                    [ class "input"
-                    , placeholder "Find music"
-                    , type_ "text"
-                    , onInput SearchFormInputQuery
+            [ div [ class "nav-item field is-grouped" ]
+                [ p
+                    [ class "control is-expanded" ]
+                    [ input
+                        [ class "input"
+                        , placeholder "Artist"
+                        , type_ "text"
+                        , onInput SearchFormInputArtist
+                        ]
+                        []
                     ]
-                    []
-                , button
-                    [ class <| "button is-info " ++ isLoading ]
-                    [ text "Search" ]
+                , p
+                    [ class "control is-expanded" ]
+                    [ input
+                        [ class "input"
+                        , placeholder "Track"
+                        , type_ "text"
+                        , onInput SearchFormInputTrack
+                        ]
+                        []
+                    ]
+                , p
+                    [ class "control" ]
+                    [ button
+                        [ class <| "button is-info " ++ isLoading ]
+                        [ text "Search" ]
+                    ]
                 ]
             ]
 

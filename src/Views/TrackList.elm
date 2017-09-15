@@ -8,6 +8,8 @@ import Html.Events exposing (on, onClick)
 import String exposing (toInt)
 import Mouse exposing (Position)
 import Json.Decode as Json
+import Utils exposing (timeToString)
+import Result exposing (withDefault)
 
 
 -- VIEW
@@ -61,23 +63,10 @@ grabHandle =
 
 viewTrackDuration : String -> String
 viewTrackDuration time =
-    let
-        ms =
-            Result.withDefault 0 (toInt time)
-
-        minutes =
-            ms // 1000 // 60
-
-        seconds =
-            ms // rem 1000 60
-
-        zeroPadding =
-            if seconds < 10 then
-                "0"
-            else
-                ""
-    in
-        toString minutes ++ ":" ++ zeroPadding ++ toString seconds
+        time |>
+        toInt |>
+        withDefault 0 |>
+        timeToString
 
 
 viewYoutubeLink : Maybe String -> Html Msg

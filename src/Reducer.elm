@@ -11,6 +11,7 @@ import Updates.RenamePlaylist as RenamePlaylist
 import Updates.DeletePlaylist as DeletePlaylist
 import Updates.AddTrackToPlaylist as AddTrackToPlaylist
 import Updates.RemoveTrackFromPlaylist as RemoveTrackFromPlaylist
+import Updates.SortMusicTable as SortMusicTable
 import Updates.Commons as Commons
 
 
@@ -28,6 +29,7 @@ update msg model =
             , DeletePlaylist.update
             , AddTrackToPlaylist.update
             , RemoveTrackFromPlaylist.update
+            , SortMusicTable.update
             , Commons.update
             ]
 

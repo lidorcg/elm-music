@@ -37,3 +37,22 @@ type alias WebData a =
 (:=) : String -> Decoder a -> Decoder a
 (:=) name decoder =
     field name decoder
+
+timeToString : Int -> String
+timeToString ms =
+    let
+        s = ms // 1000
+
+        minutes =
+            s // 60
+
+        seconds =
+            rem s 60
+
+        zeroPadding =
+            if seconds < 10 then
+                "0"
+            else
+                ""
+    in
+        toString minutes ++ ":" ++ zeroPadding ++ toString seconds

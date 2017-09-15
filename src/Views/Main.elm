@@ -4,19 +4,21 @@ import State exposing (..)
 import Actions exposing (..)
 import Models exposing (..)
 import Utils exposing (RemoteData(..), WebData)
-import Html exposing (..)
-import List exposing (filter, head)
+import Html exposing (Html, p, text, div, span, i, a)
+import List exposing (map, filter, head)
 import Views.TrackList as TrackList
+import Table
+import Views.MusicTable exposing (config)
 
 
 -- VIEW
 
 
 view : Model -> Html Msg
-view { displayMain, playlists, searchResult } =
+view { displayMain, playlists, searchResult, tableState } =
     case displayMain of
         DisplayPlaylist playlistId ->
-            displayPlayist playlistId playlists
+            displayPlayist playlistId playlists tableState
 
         DisplaySearchResult ->
             displaySearchResult searchResult
@@ -25,8 +27,8 @@ view { displayMain, playlists, searchResult } =
             p [] [ text "There is nothing to show" ]
 
 
-displayPlayist : String -> WebData (List Playlist) -> Html Msg
-displayPlayist playlistId playlists =
+displayPlayist : String -> WebData (List Playlist) -> Table.State -> Html Msg
+displayPlayist playlistId playlists tableState =
     case playlists of
         NotAsked ->
             p [] [ text "We haven't asked for this playlist yet" ]
@@ -39,15 +41,12 @@ displayPlayist playlistId playlists =
 
         Success res ->
             let
-                playlist =
-                    filter (\p -> p.id == playlistId) res |> head
+                playlistView =
+                    res
+                        |> filter (\p -> p.id == playlistId)
+                        |> map (\p -> Table.view config tableState p.tracks)
             in
-                case playlist of
-                    Nothing ->
-                        p [] [ text "The playlist isn't here anymore!" ]
-
-                    Just p ->
-                        TrackList.view p.tracks
+                div [] playlistView
 
 
 displaySearchResult : WebData (List Track) -> Html Msg

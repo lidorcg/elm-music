@@ -3,7 +3,7 @@
 -}
 
 
-module GraphQL.Discover exposing (search, Search)
+module GraphQL.Discover exposing (searchMusic, SearchMusic)
 
 import Task exposing (Task)
 import Json.Decode exposing (..)
@@ -18,7 +18,7 @@ endpointUrl =
     "http://localhost:5000/discover/graphql"
 
 
-type alias Search =
+type alias SearchMusic =
     { searchTracks :
         List
             { name : Maybe String
@@ -29,28 +29,33 @@ type alias Search =
     }
 
 
-search :
-    { query : String
-    }
-    -> Task Http.Error Search
-search params =
+searchMusic : { artist : String, track : String } -> Task Http.Error SearchMusic
+searchMusic params =
     let
         graphQLQuery =
-            """query search($query: String!) { searchTracks(query: $query) { name artists duration youtubeId } }"""
+            """query searchMusic($artist: String!, $track: String!) {
+              searchMusic(artist: $artist, track: $track) {
+                name
+                artists
+                duration
+                youtubeId
+              }
+            }"""
     in
         let
             graphQLParams =
                 Json.Encode.object
-                    [ ( "query", Json.Encode.string params.query )
+                    [ ( "artist", Json.Encode.string params.artist )
+                    , ( "track", Json.Encode.string params.track )
                     ]
         in
-            GraphQL.query "GET" endpointUrl graphQLQuery "search" graphQLParams searchDecoder
+            GraphQL.query "GET" endpointUrl graphQLQuery "searchMusic" graphQLParams searchMusicDecoder
 
 
-searchDecoder : Decoder Search
-searchDecoder =
-    map Search
-        ("searchTracks"
+searchMusicDecoder : Decoder SearchMusic
+searchMusicDecoder =
+    map SearchMusic
+        ("searchMusic"
             := (list
                     (apply (apply (apply (map (\name artists duration youtubeId -> { name = name, artists = artists, duration = duration, youtubeId = youtubeId }) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
                )

@@ -1,11 +1,12 @@
 module Actions exposing (..)
 
 import Models exposing (Playlist, Track)
-import GraphQL.Discover exposing (Search)
+import GraphQL.Discover exposing (SearchMusic)
 import GraphQL.Playlists exposing (Playlists, CreatePlaylist, RenamePlaylist, DeletePlaylist, AddTrackToPlaylist, RemoveTrack)
 import Http exposing (Error)
 import Dom exposing (Error)
 import Mouse exposing (Position)
+import Table
 
 
 -- ACTIONS
@@ -13,9 +14,10 @@ import Mouse exposing (Position)
 
 type Msg
     = -- Search
-      SearchFormInputQuery String
+      SearchFormInputArtist String
+    | SearchFormInputTrack String
     | Search
-    | SearchResponse (Result Http.Error Search)
+    | SearchResponse (Result Http.Error SearchMusic)
     | ShowSearchResult
       -- Display Playlist
     | PlaylistResponse (Result Http.Error Playlists)
@@ -46,6 +48,8 @@ type Msg
     | RemoveTrackResponse (Result Http.Error RemoveTrack)
       -- Edit Track On Playlist
       -- Create New Track
+      -- Search and sort music
+    | SetTableState Table.State
       -- Commons
     | FocusFail (Result Dom.Error ())
     | HideForm
