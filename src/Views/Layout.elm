@@ -19,7 +19,7 @@ view state =
         [ div
             [ class "column is-2" ]
             [ div
-                [ class "container is-fluid is-marginless" ]
+                [ class "container is-marginless is-fixed is-1-6-width" ]
                 [ Menu.view state ]
             ]
         , div

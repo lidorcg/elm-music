@@ -13,6 +13,8 @@ import Views.SearchForm as SearchForm
 view : Model -> Html Msg
 view state =
     nav [ class "nav" ]
-        [ div [ class "nav-left" ]
-            [ SearchForm.view state ]
+        [ div [ class "container" ]
+            [ div [ class "nav-left" ]
+                [ SearchForm.view state ]
+            ]
         ]
