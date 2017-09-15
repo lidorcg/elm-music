@@ -1,15 +1,6 @@
 
-query searchTracksByName($artist: String!, $track: String!) {
-  searchTracksByNameLastfm(artistName: $artist, trackName: $track) {
-    name
-    artists
-    duration
-    youtubeId
-  }
-}
-
-query searchTracksByArtist($artist: String!) {
-  searchTracksByArtistNameLastfm(artistName: $artist) {
+query searchMusic($artist: String!, $track: String!) {
+  searchMusic(artistName: $artist, trackName: $track) {
     name
     artists
     duration

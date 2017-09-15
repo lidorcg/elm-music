@@ -3,7 +3,7 @@
 -}
 
 
-module GraphQL.Discover exposing (search, Search)
+module GraphQL.Discover exposing (searchMusic, SearchMusic)
 
 import Task exposing (Task)
 import Json.Decode exposing (..)
@@ -18,7 +18,7 @@ endpointUrl =
     "http://localhost:5000/discover/graphql"
 
 
-type alias Search =
+type alias SearchMusic =
     { searchTracks :
         List
             { name : Maybe String
@@ -29,28 +29,18 @@ type alias Search =
     }
 
 
-search : { artist : String, track : String } -> Task Http.Error Search
-search params =
-    case params.track of
-        "" ->
-            searchTrackByArtist params.artist
-
-        _ ->
-            searchTrackByName params
-
-
-searchTrackByName : { artist : String, track : String } -> Task Http.Error Search
-searchTrackByName params =
+searchMusic : { artist : String, track : String } -> Task Http.Error SearchMusic
+searchMusic params =
     let
         graphQLQuery =
-            """query searchTracksByName($artist: String!, $track: String!) {
-                searchTracksByNameLastfm(artistName: $artist, trackName: $track) {
-                  name
-                  artists
-                  duration
-                  youtubeId
-                }
-              }"""
+            """query searchMusic($artist: String!, $track: String!) {
+              searchMusic(artist: $artist, track: $track) {
+                name
+                artists
+                duration
+                youtubeId
+              }
+            }"""
     in
         let
             graphQLParams =
@@ -59,44 +49,13 @@ searchTrackByName params =
                     , ( "track", Json.Encode.string params.track )
                     ]
         in
-            GraphQL.query "GET" endpointUrl graphQLQuery "searchTracksByName" graphQLParams searchTrackByNameDecoder
+            GraphQL.query "GET" endpointUrl graphQLQuery "searchMusic" graphQLParams searchMusicDecoder
 
 
-searchTrackByArtist : String -> Task Http.Error Search
-searchTrackByArtist artist =
-    let
-        graphQLQuery =
-            """query searchTracksByArtist($artist: String!) {
-                searchTracksByArtistNameLastfm(artistName: $artist) {
-                  name
-                  artists
-                  duration
-                  youtubeId
-                }
-              }"""
-    in
-        let
-            graphQLParams =
-                Json.Encode.object
-                    [ ( "artist", Json.Encode.string artist )
-                    ]
-        in
-            GraphQL.query "GET" endpointUrl graphQLQuery "searchTracksByArtist" graphQLParams searchTrackByArtistDecoder
-
-
-searchTrackByNameDecoder : Decoder Search
-searchTrackByNameDecoder =
-    map Search
-        ("searchTracksByNameLastfm"
-            := (list
-                    (apply (apply (apply (map (\name artists duration youtubeId -> { name = name, artists = artists, duration = duration, youtubeId = youtubeId }) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
-               )
-        )
-
-searchTrackByArtistDecoder : Decoder Search
-searchTrackByArtistDecoder =
-    map Search
-        ("searchTracksByArtistNameLastfm"
+searchMusicDecoder : Decoder SearchMusic
+searchMusicDecoder =
+    map SearchMusic
+        ("searchMusic"
             := (list
                     (apply (apply (apply (map (\name artists duration youtubeId -> { name = name, artists = artists, duration = duration, youtubeId = youtubeId }) (maybe ("name" := string))) (maybe ("artists" := string))) (maybe ("duration" := string))) (maybe ("youtubeId" := string)))
                )
