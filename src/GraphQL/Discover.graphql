@@ -1,9 +1,0 @@
-
-query searchMusic($artist: String!, $track: String!) {
-  searchMusic(artistName: $artist, trackName: $track) {
-    name
-    artists
-    duration
-    youtubeId
-  }
-}
